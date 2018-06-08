@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="{{url_for('static',filename='style.css')}}" rel="stylesheet">
+    </head>
+    <body>
+        {% include 'topbar.html' %}
+        {% include 'flashes.html' %}
+       
+        <div class="sidebar login-box centered">
+           
+           <div class="bordered box centered-contents">
+               
+               <div class="arrow-container">
+                    <img src="{{url_for('static',filename='arrow-left.gif')}}" class="top-arrow" onclick="prevEyes()"/>
+                    <img src="{{url_for('static',filename='arrow-left.gif')}}" class="bottom-arrow" onclick="prevMouth()"/>
+               </div>
+               {% include 'frogvatar-container.html' %}
+               
+               <div class="arrow-container">
+                    <img src="{{url_for('static',filename='arrow-right.gif')}}" class="top-arrow" onclick="nextEyes()"/>
+                    <img src="{{url_for('static',filename='arrow-right.gif')}}" class="bottom-arrow" onclick="nextMouth()"/>
+               </div>
+               
+               <form action="{{url_for('register')}}" method="post">
+                   <div class="col-8 centered"><input class="form-input centered-contents" placeholder="username" name="username"></div>
+                   <div class="col-8 centered"><input type="password" class="form-input centered-contents" placeholder="password" name="password"></div>
+                   <div class="col-8 centered"><input type="password" class="form-input centered-contents" placeholder="confirm password" name="password_confirm"></div>
+                   <input type="hidden" id="eyes-setting"  name="eyes-setting" value=""/>
+                   <input type="hidden" id="mouth-setting" name="mouth-setting" value="" />
+                   <button class="form-button" type="submit">Register!</button><br><br>
+               </form>
+               <div class="box wide">
+                    
+                    Already have an account? <a href="{{ url_for('login') }}">Sign in!</a>
+               </div>
+            </div>
+            
+            
+        </div>
+        <script>
+        
+           setEyes();
+            setMouth();
+        </script>
+      
+
+    </body>
+
+</html>

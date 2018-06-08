@@ -1,0 +1,66 @@
+<div class="frogvatar-container">
+    <img src="{{url_for('static',filename='head.gif')}}" class="frogvatar"/>
+    <img src="{{url_for('static',filename='eyes-1.gif')}}" class="frogvatar" id="eyes"/>
+    <img src="{{url_for('static',filename='mouth-1.gif')}}" class="frogvatar" id="mouth"/>
+</div>
+
+<script>
+    var eyes = new Array();
+    eyes[0] = '{{url_for("static",filename="eyes-1.gif")}}';
+    eyes[1] = '{{url_for("static",filename="eyes-2.gif")}}';
+    eyes[2] = '{{url_for("static",filename="eyes-3.gif")}}';
+    eyes[3] = '{{url_for("static",filename="eyes-4.gif")}}';
+    eyes[4] = '{{url_for("static",filename="eyes-5.gif")}}';
+    eyes[5] = '{{url_for("static",filename="eyes-6.gif")}}';
+    
+    
+    var mouths = new Array();
+    
+    mouths[0] = '{{url_for("static",filename="mouth-1.gif")}}';
+    mouths[1] = '{{url_for("static",filename="mouth-2.gif")}}';
+    mouths[2] = '{{url_for("static",filename="mouth-3.gif")}}';
+    mouths[3] = '{{url_for("static",filename="mouth-4.gif")}}';
+    mouths[4] = '{{url_for("static",filename="mouth-5.gif")}}';
+    mouths[5] = '{{url_for("static",filename="mouth-6.gif")}}';
+
+    var eye = Math.floor(Math.random() * eyes.length);
+    var mouth = Math.floor(Math.random() * mouths.length);
+
+    function nextEyes() {
+        setEyes(++eye);
+    }
+    
+    function prevEyes() {
+        setEyes(--eye);
+    }
+    
+    function nextMouth() {
+        setMouth(++mouth);
+    }
+    
+    function prevMouth() {
+        setMouth(--mouth);
+    }
+    
+    function setEyes() {
+        eye = eye >= eyes.length ? 0 : eye;
+        eye = eye < 0 ? eyes.length - 1 : eye;
+        document.getElementById("eyes").src = eyes[eye];
+        eyesForm = document.getElementById("eyes-setting");
+        if (eyesForm) {
+            eyesForm.value = eye;
+        }
+    }
+    function setMouth() {
+        mouth = mouth >= mouths.length ? 0 : mouth;
+        mouth = mouth < 0 ? mouths.length - 1 : mouth;
+        document.getElementById("mouth").src = mouths[mouth];
+        mouthForm = document.getElementById("mouth-setting");
+        if (mouthForm) {
+            mouthForm.value = mouth;
+        }
+    }
+    setEyes();
+    setMouth();
+    
+</script>

@@ -1,0 +1,313 @@
+<html onmouseleave="stopPainting()">
+    <head>
+        <script src="{{url_for('static', filename='artisan.js')}}"></script>
+        <script type="text/javascript" src="{{url_for('static', filename='socketio.min.js')}}"></script>
+        <script>
+            var socket = io.connect('http://73.182.117.236:5000');
+
+            socket.on('connect', function() {
+                room_code = '{{ room.room_code }}';
+                user_auth = '{{ user.auth_token }}';
+                socket.emit('join', {'room':room_code, 'auth_token':user_auth});
+            });
+
+        </script>
+        <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}" />
+        <style>
+        
+            .control-button {
+                height:50px;
+                width:50px;
+                display:inline-block;
+                margin:5px;
+                cursor:pointer;
+            }
+            .unselectable {
+                -webkit-user-select: none;
+                -moz-user-select: -moz-none;
+                -ms-user-select: none;
+                user-select: none;
+            
+            }
+            #color-container {
+               
+            
+            }
+            #colorpicker {
+                width:50px;
+                height:50px;
+                border:2px solid #eee;
+                margin:25px auto;
+                display:block;
+                cursor:pointer;
+            }
+            input[type="color"] {
+                -webkit-appearance: none;
+                border: none;
+                width: 32px;
+                height: 32px;
+            }
+            input[type="color"]::-webkit-color-swatch-wrapper {
+                padding: 0;
+            }
+            input[type="color"]::-webkit-color-swatch {
+                border: none;
+            }
+            .canvas-wrapper {
+                display:table;
+                max-width:1710px;
+                overflow-wrap: break-word;
+                width:95%;
+                win-width:1300px;
+            }
+            .color {
+                width:20%;
+                height:40px;
+                display:inline-block;
+                float:none;
+
+            }
+        </style>
+    </head>
+    <body id="page">
+        {% include 'topbar.html' %}
+        {% include 'flashes.html' %}
+        <div class="box canvas-wrapper centered">
+            
+            <script src="{{url_for('static', filename='artpad.js')}}"></script>
+            <script src="{{url_for('static', filename='artpadmulti.js')}}"></script>
+            <script src="{{url_for('static', filename='html5kellycolorpicker.min.js')}}"></script>
+
+
+            {% include 'chat.html' %}
+            
+
+            
+            <div id="container" style="max-width:1100px;height:700px;" onmousedown="syncBrushValues();">
+                <div id="spinnerContainer" class="spinnerContainer">
+                    <img class="spinner" id="spinner" src="{{url_for('static', filename='spinner.gif')}}" />
+                </div>
+                {% if pictionary %}
+                    {% include 'pictionary-idle-message.html' %}
+                {% endif %}
+
+            </div>
+            
+
+            
+            <div id="colorbar">
+                <div style="height:220px;width:120px;margin:0px auto;" >
+                    <canvas id='picker'  onmousedown="usingControls()" onmouseup="updateColor();notUsingControls();syncBrushValues();" style="margin-top:40px;" ></canvas>
+                    
+                </div>
+
+                <input id="colorpicker" value="#000000" type="hidden">
+              
+                <div class="slidecontainer">
+                  <input type="range" min="1" max="100" value="10" class="slider" id="sizeSlider" onchange="updateSize()" onmousedown="usingControls()" onmouseup="notUsingControls()">
+                </div>
+                <div id ="sizeDisplayContainer" style="width: 100%;height: 200px;" onresize="updateSize()">
+                    <canvas id="sizeDisplay"></canvas>
+                </div>
+                <div class="slidecontainer">
+                  <input type="range" min="1" max="100" value="100" class="slider" id="alphaSlider" onchange="updateAlpha()" onmousedown="usingControls()" onmouseup="notUsingControls()">
+                </div>
+                <div style="text-align:center">
+                    <img class="control-button" src="{{url_for('static', filename='undo.gif')}}" onclick="artPad.localUndo()" />
+                    <img class="control-button" src="{{url_for('static', filename='redo.gif')}}" onclick="artPad.localRedo()" />
+                    <img class="control-button" src="{{url_for('static', filename='reset.gif')}}" onclick="artPad.localReset()" />
+                </div>
+            </div>
+
+            
+            
+            <script>
+                var cv = document.getElementById("container");
+                artPad = new MultiUserArtPad(cv);
+                document.getElementById('containerartpad').style.display = 'none';
+            </script>
+            
+            <script type="text/javascript">
+            
+                //initialize the color picker
+                new KellyColorPicker({
+                    place : 'picker',
+                    input: 'colorpicker',
+                    size: 120,
+                });
+                
+                var inputBuffer = [];
+                
+                
+                socket.on('join', function(data) {
+                    room_id = '{{ room.id }}';
+                    
+                    if (data) {
+                        artPad.addUser(data.uid, artPad);
+                        artPad.replay();
+                    }
+                });
+
+                socket.on('receive_input', function(data) {
+                    data = JSON.parse(data);
+                    
+                    
+                    if (data) {
+                        artPad.receiveInputs(data.uid, data.i, true);
+                    }   
+                    
+                });
+                artPad.using = false;
+                function usingControls() {
+                    console.log("using");
+                    artPad.using = true;
+                }
+                function notUsingControls() {
+                console.log("n using");
+                    artPad.using = false;
+                }
+
+                socket.on('room_history', function(data) {
+                    if (data) {
+                        var JSONdata = JSON.parse(data);
+                        for (var i = 0; i < JSONdata.length; i++) {
+                            
+                            for (var j = 0; j < JSONdata[i].data.length; j++) {
+                                var inputStr = JSONdata[i].data[j];
+                     
+                                inputStr = inputStr.replace(/True/g, 'true');
+                                inputStr = inputStr.replace(/False/g, 'false');
+                                inputStr = inputStr.replace(/'/g, '"');
+                                inputStr = inputStr.replace(/None/g, '"undefined"');
+                                inputJSON = JSON.parse(inputStr);
+                                artPad.loadInputs(JSONdata[i].uid, inputJSON);
+                            }
+                            
+                        }
+                        for (var i = 0; i < artPad.users.length; i++) {
+                        
+                            artPad.longFormReplay(artPad.users[i].id);
+                        }
+                        
+                    }
+                    localUserId = '{{ user.id }}';
+                    artPad.localAddUser(localUserId);
+                    
+                    artPad.localUser.handleLocalInput = function(input) {
+                        inputBuffer.push(input);
+                    }
+                    
+                    updateColor();
+                    updateAlpha();
+                    updateSize();
+                    removeSpinner();
+                    pushInputs();
+
+                });
+
+                socket.on('user_offline', function(data) {
+                    console.log(data);
+                });
+                
+                function pushInputs () {
+                    setTimeout(function() {
+                        if (artPad.localUser) {
+                            artPad.localUser.handleLocalInput = function(input) {
+                                inputBuffer.push(input);
+                            }
+                    
+                        }
+                        if (inputBuffer.length > 0 && artPad.localUser) {
+                            var roomid = '{{ room.id }}';
+                            socket.emit('input', {room:roomid, i:inputBuffer});
+                            inputBuffer = [];
+                        
+                        }
+                        
+                        pushInputs();
+                    }, 320);
+                }
+                
+
+                function updateSize() {
+                    var sizeSlider = document.getElementById('sizeSlider');
+                    artPad.localSetBrushSize(sizeSlider.value);
+                    drawBrushSetting();
+                }
+                
+                // draws a preview of what the brush looks like in the sizeDisplay element
+                function drawBrushSetting() {
+                    artisan.clearCanvas('sizeDisplay');
+                    x = document.getElementById('colorbar').clientWidth / 2;
+                    artisan.drawCircle('sizeDisplay', x, 100, sizeSlider.value * 0.5, artPad.getBrushColor(artPad.localUser.id), undefined, undefined, artPad.localUser.brushAlpha);
+                }
+
+                function updateColor(color) {
+                    color = document.getElementById("colorpicker").value;
+                    artPad.localSetBrushColor(color);
+                    drawBrushSetting();
+                }
+
+                function updateAlpha() {
+                    var alphaSlider = document.getElementById('alphaSlider');
+                    artPad.localSetBrushAlpha(alphaSlider.value * 0.01);
+                    drawBrushSetting();
+                }
+                function stopPainting() {
+                    if (artPad.localUser && artPad.localUser.painting == true) {
+                        artPad.localUser.painting = false;
+                        artPad.localUser.inputSequence.push([4, false]);
+                        artPad.localUser.handleLocalInput([4, false]);
+                    }        
+                    document.body.classList.remove("unselectable");
+                }
+
+                document.body.onmouseup = function(e)  {
+                   stopPainting();
+                }
+
+                function removeSpinner() {
+                    document.getElementById('spinnerContainer').style.display = 'none';
+                }
+                
+                document.getElementById("container").onmouseenter = function() {
+                    document.body.classList.add("unselectable");
+                }
+                
+                    
+                // to maintain parity when user has multiple tabs open
+                function syncBrushValues() {
+
+                    var alphaSlider = document.getElementById('alphaSlider');
+                    var alphaSlider = document.getElementById('alphaSlider');
+                    var colorPicker = document.getElementById('colorpicker');
+                    alphaSlider.value = artPad.localUser.brushAlpha * 100;
+                    sizeSlider.value = artPad.localUser.brushSize;      
+                    colorPicker.value = artPad.localUser.brushColor;      
+                    drawBrushSetting();
+
+                }
+                function setColor(color) {
+                    var colorPicker = document.getElementById("colorpicker");
+                    colorPicker.value = color;
+                    updateColor();
+                }
+                function socketAlive() {
+                     setTimeout(function() {
+                        socket.emit('socket_alive');
+                        socketAlive();
+                    }, 3200);
+                }
+                socketAlive();
+            </script>
+            {% if pictionary %}
+                {% include 'pictionary.html' %}
+            {% endif %}
+
+            
+            
+            
+        </div>
+        
+    </body>
+</html>

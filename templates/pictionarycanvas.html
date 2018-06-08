@@ -1,0 +1,199 @@
+<html onmouseleave="stopPainting()">
+    <head>
+        <script src="{{url_for('static', filename='artisan.js')}}"></script>
+        <script type="text/javascript" src="{{url_for('static', filename='socketio.min.js')}}"></script>
+        <script>
+            var socket = io.connect('http://localhost:5000');
+        </script>
+        <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}" />
+    </head>
+    <body id="page">
+        {% include 'topbar.html' %}
+        {% include 'flashes.html' %}
+        <div class="box canvas-wrapper centered">
+            
+            <script src="{{url_for('static', filename='artpad.js')}}"></script>
+            <script src="{{url_for('static', filename='artpadmulti.js')}}"></script>
+
+            {% include 'chat.html' %}
+            
+
+            
+            <div id="container" style="width:1000px;height:700px;">
+                <div id="spinnerContainer" class="spinnerContainer">
+                    <img class="spinner" id="spinner" src="{{url_for('static', filename='spinner.gif')}}" />
+                </div>
+                    
+            </div>
+            
+
+            
+            <div id="colorbar">
+                <div class="color" style="background-color:#000" onclick="updateColor('#000000')"></div>
+                <div class="color" style="background-color:#ff00de" onclick="updateColor('#ff00de')"></div>
+                <div class="color" style="background-color:#ff0030" onclick="updateColor('#ff0030')"></div>
+                <div class="color" style="background-color:#ff0000" onclick="updateColor('#ff0000')"></div>
+                <div class="color" style="background-color:#ffa800" onclick="updateColor('#ffa800')"></div>
+                <div class="color" style="background-color:#96ff00" onclick="updateColor('#96ff00')"></div>
+                <div class="color" style="background-color:#00ff2a" onclick="updateColor('#00ff2a')"></div>
+                <div class="color" style="background-color:#00ffcc" onclick="updateColor('#00ffcc')"></div>
+                <div class="color" style="background-color:#00a8ff" onclick="updateColor('#00a8ff')"></div>
+                <div class="color" style="background-color:#3600ff" onclick="updateColor('#3600ff')"></div>
+                <div class="color" style="background-color:#1a00a0" onclick="updateColor('#1a00a0')"></div>
+                <div class="color" style="background-color:#ffffff" onclick="updateColor('#ffffff')"></div>
+                <div class="slidecontainer">
+                  <input type="range" min="1" max="100" value="10" class="slider" id="sizeSlider" onchange="updateSize()">
+                </div>
+                <div style="height:200px;width:200px;">
+                    <canvas id="sizeDisplay"></canvas>
+                </div>
+                <div class="slidecontainer">
+                  <input type="range" min="1" max="100" value="100" class="slider" id="alphaSlider" onchange="updateAlpha()">
+                </div>
+
+                
+            </div>
+
+            
+            
+            <script>
+                var cv = document.getElementById("container");
+                artPad = new MultiUserArtPad(cv);
+                document.getElementById('containerartpad').style.display = 'none';
+            </script>
+            
+            <script type="text/javascript">
+            
+                            
+                var inputBuffer = [];
+                
+                socket.on('connect', function() {
+                    room_code = '{{ room.room_code }}';
+                    user_auth = '{{ user.auth_token }}';
+                    socket.emit('join', {'room':room_code, 'auth_token':user_auth});
+                });
+
+                socket.on('join', function(data) {
+                    room_id = '{{ room.id }}';
+                    
+                    if (data) {
+                        artPad.addUser(data.uid, artPad);
+                        artPad.replay();
+                    }
+                });
+
+                socket.on('receive_input', function(data) {
+                    data = JSON.parse(data);
+                    
+                    
+                    if (data) {
+                        artPad.receiveInputs(data.uid, data.i);
+                        artPad.userReplay(data.uid);
+                    }   
+                    
+                });
+
+                socket.on('room_history', function(data) {
+                    console.log("help!");
+                    if (data) {
+                        var JSONdata = JSON.parse(data);
+                        for (var i = 0; i < JSONdata.length; i++) {
+                            
+                            for (var j = 0; j < JSONdata[i].data.length; j++) {
+                                var inputStr = JSONdata[i].data[j];
+                                
+                                inputStr = inputStr.replace(/True/g, 'true');
+                                inputStr = inputStr.replace(/False/g, 'false');
+                                inputStr = inputStr.replace(/'/g, '"');
+                                inputStr = inputStr.replace(/None/g, '"undefined"');
+                                inputJSON = JSON.parse(inputStr);
+                                artPad.loadInputs(JSONdata[i].uid, inputJSON);
+                                
+                            }
+                            
+                        }
+                        for (var i = 0; i < artPad.users.length; i++) {
+                        
+                            artPad.longFormReplay(artPad.users[i].id);
+                        }
+                        
+                    }
+                    localUserId = '{{ user.id }}';
+                    artPad.localAddUser(localUserId);
+                    updateColor("#000000");
+                    updateAlpha();
+                    console.log("done");
+                    removeSpinner();
+                    updateAlpha();
+                    pushInputs();
+                });
+
+                function pushInputs () {
+                    setTimeout(function() {
+                        
+                        
+                        if (inputBuffer.length > 0) {
+                            var roomid = '{{ room.id }}';
+                            
+                            socket.emit('input', {room:roomid, i:inputBuffer});
+                            inputBuffer = [];
+                        }
+                        if (artPad.localUser) {
+                            artPad.localUser.handleLocalInput = function(input) {
+                                inputBuffer.push(input);
+
+                            }
+                        }
+                        
+
+                        pushInputs();
+                    }, 600);
+                }
+                pushInputs();
+
+                function updateSize() {
+                    var sizeSlider = document.getElementById('sizeSlider');
+                    artPad.localSetBrushSize(sizeSlider.value);
+                    artisan.clearCanvas('sizeDisplay');
+                    artisan.drawCircle('sizeDisplay', 100, 100, sizeSlider.value * 0.5, artPad.getBrushColor(artPad.localUser.id), undefined, undefined, artPad.localUser.brushAlpha);
+                }
+
+                function updateColor(color) {
+                    artPad.localSetBrushColor(color);
+                    updateSize();
+                }
+
+                function updateAlpha() {
+                    var alphaSlider = document.getElementById('alphaSlider');
+                    artPad.localSetBrushAlpha(alphaSlider.value * 0.01);
+                    updateSize();
+                }
+                function stopPainting() {
+                    if (artPad.localUser && artPad.localUser.painting == true) {
+                        artPad.localUser.painting = false;
+                        artPad.localUser.inputSequence.push([4, false]);
+                        artPad.localUser.handleLocalInput([4, false]);
+                    }        
+                }
+
+                document.body.onmouseup = function(e)  {
+                   stopPainting();
+                }
+
+                function removeSpinner() {
+                    document.getElementById('spinnerContainer').style.display = 'none';
+                }
+                
+            
+            </script>
+            <div style="clear:both">
+                <button onclick="artPad.localReset()">Reset</button>
+                <button onclick="artPad.localUndo()">Undo</button>
+                <button onclick="artPad.localRedo()">Redo</button>
+            </div>
+            
+            
+        </div>
+        
+    </body>
+</html>

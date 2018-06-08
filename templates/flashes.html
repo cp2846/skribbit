@@ -1,0 +1,8 @@
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+   
+    {% for message in messages %}
+      <div class="box-danger col-10 centered">{{message}}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}

@@ -1,0 +1,35 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <link href="{{url_for('static',filename='style.css')}}" rel="stylesheet">
+         <style type="text/css">
+           .button-wide {
+             
+                padding:5px;
+                background-color:#26af5d;
+                border:none;
+                border-radius:5px;
+                text-align:center;
+                color:white;
+                font-size:32px;
+                vertical-align:middle;
+                display:flex;
+           }
+         </style>
+         
+    </head>
+    <body>
+        {% include 'topbar.html' %}
+        {% include 'flashes.html' %}
+        <div class="centered-contents">
+            <div class="bordered box centered-contents" style="display:flex; width:500px;margin:30px auto;">
+                <div class="page-wrapper centered-contents" style="margin:auto;padding:15px;">
+                    <h2>Select Room Type</h2>
+                    <a class="button-wide" href="{{url_for('create_room_pictionary')}}">Create New Pictionary Room</a><br>
+                    <a class="button-wide" href="{{url_for('create_room_normal')}}">Create New Free For All Room</a><br>
+                   
+                </div>
+            </div>   
+        </div>
+    </body>
+</html>

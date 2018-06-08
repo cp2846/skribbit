@@ -1,0 +1,95 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <link href="{{url_for('static',filename='style.css')}}" rel="stylesheet">
+         <style type="text/css">
+            .rooms {
+                width: 600px;
+                border: 1px solid #ddd;
+                overflow-y: scroll;
+                overflow-wrap: break-word;
+                border-radius: 6px;
+                float: left;
+                margin: 5px;
+                background-color: white;
+                max-height:800px;
+                text-align:left;
+            }
+            .room {
+                margin:5px;
+                border: 1px solid #ddd;
+                display:flex;
+            
+            }
+            .room-title {
+                padding:5px;
+                width:70%;
+                float:left;
+                margin:auto;
+            }
+            .room-count {
+                padding:5px;
+                width:28%;
+                margin:auto;
+                float:right;
+                color:#bbb;
+                text-align:center;
+            }
+            .sidebar {
+                float:left;
+                width:300px;
+                border-radius:5px;
+                display:inline-table;
+            }
+            .room-wrapper {
+                overflow: auto;
+    
+                display: inline-table;
+                margin: auto;
+            }
+            .page-wrapper {
+                text-align:center;
+            }
+            
+         </style>
+         
+    </head>
+    <body>
+        {% include 'topbar.html' %}
+        {% include 'flashes.html' %}
+        <div class="page-wrapper">
+            <div class="room-wrapper">
+                <div class="sidebar">
+                   
+                   <div class="bordered box centered-contents">
+                       <h3>{{ user.username }}</h3>
+                       {% include 'frogvatar-container.html' %}
+                    </div>
+                </div>
+                <div class="rooms">
+                <div class="room">
+                    
+                        
+                   
+                    <div class="room-title">Room Name</div>
+                    <div class="room-count">Online </div>
+                </div>
+                {% for r in rooms %}
+                <div class="room">
+                    
+                        
+                   
+                    <div class="room-title"><a href="{{url_for('canvas',room_code=r.room_code)}}">{{ r.name }}</a></div>
+                    <div class="room-count"> {{ r.get_active_users()|length }} </div>
+                </div>
+                 {% endfor %}
+            </div>
+        </div>
+        <script>
+            eye = '{{ user.frogvatar_eyes }}';
+            mouth = '{{ user.frogvatar_mouth }}';
+            setEyes();
+            setMouth();
+        </script>
+    </body>
+</html>
