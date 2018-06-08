@@ -12,14 +12,12 @@ from flask import redirect, url_for, flash, request, abort, render_template
 from sqlalchemy import func
 import json
 
-def register():
+def make_user():
 
     errors = []
     
     if request.method == 'POST':
         username = request.form['username']
-        password = request.form['password']
-        password_confirm = request.form['password_confirm']
         frogvatar_eyes = request.form['eyes-setting']
         frogvatar_mouth = request.form['mouth-setting']
         existing_user = User.query.filter(func.lower(User.username) == func.lower(username)).first()
@@ -29,12 +27,6 @@ def register():
         
         if existing_user:
             errors.append("Username is already taken")
-            
-        if password != password_confirm:
-            errors.append("Passwords do not match")
-
-        if len(password) < 6:
-            errors.append("Password must be at least 6 characters.")
             
         try:
             frogvatar_eyes = int(frogvatar_eyes)
@@ -51,18 +43,14 @@ def register():
             for error in errors:
                 flash(error, 'error')
             return redirect(url_for('register'))
-            
-        
+
         else:
-            new_user = User(username, password, frogvatar_eyes=frogvatar_eyes, frogvatar_mouth=frogvatar_mouth)
+            new_user = User(username, frogvatar_eyes=frogvatar_eyes, frogvatar_mouth=frogvatar_mouth)
             db.session.add(new_user)
             new_user.set_auth_token()
             db.session.commit()
-
+            
             session['username'] = request.form['username']
-            
-            
-
             return redirect(url_for('index'))
             
 
@@ -71,33 +59,6 @@ def register():
 
     return render_template('register.html')  
 
-def login():
-    if request.method == 'POST':
-    
-        username = request.form['username']
-        password = request.form['password']
-
-        user = User.query.filter(func.lower(User.username) == func.lower(username)).first()
-
-        if user and user.check_password(password):
-         
-            # create session
-            session['username'] = request.form['username']
-            user.set_auth_token()
-            return redirect(url_for('index'))
-            
-        else:
-            flash('Invalid login credentials.', 'error')
-            
-    
-    if get_user():
-        return redirect(url_for('index'))  
-        
-    return render_template('login.html')
-
-def logout():
-    session.pop('username', None)
-    return redirect(url_for('login'))
 
 
 def create_room():
@@ -126,6 +87,7 @@ def create_room_pictionary():
 def create_room_normal():
     if request.method == 'POST':
         user = get_user()
+        room_name = request.form['room_name']
         room_name = room_name[0:min(100, len(room_name))]
         if not room_name:
             flash('Fields cannot be empty.', 'error')

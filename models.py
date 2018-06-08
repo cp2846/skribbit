@@ -1,3 +1,11 @@
+"""
+            MODELS for Skribbit!
+Models contain all of the basic information about
+            the Skribbit game state. 
+
+
+"""
+
 
 from flask import Flask, session
 from flask_sqlalchemy import SQLAlchemy
@@ -12,16 +20,12 @@ from datetime import datetime, timedelta
 
 app = Flask(__name__, static_url_path='/resources')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-#app.config['SQLALCHEMY_POOL_RECYCLE'] = 5
-#app.config['SQLALCHEMY_MAX_OVERFLOW'] = 0
-#app.config['SQLALCHEMY_POOL_TIMEOUT'] = 3
-#app.config['SQLALCHEMY_ECHO'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
 db = SQLAlchemy(app)
 
-# migration manager
+# INITIATE MIGRATIONS ON RUN
 migrate = Migrate(app, db)
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
@@ -31,7 +35,6 @@ class User(db.Model):
  
     id = db.Column(db.Integer(), primary_key=True)
     username = db.Column(db.String(30), unique=True, nullable=False)
-    pw_hash = db.Column(db.String(300))
     date = db.Column(db.DateTime)
     auth_token = db.Column(db.String(35))
     created_rooms = db.relationship('Room', 
@@ -58,30 +61,24 @@ class User(db.Model):
     frogvatar_eyes = db.Column(db.Integer(), default=0)
     frogvatar_mouth = db.Column(db.Integer(), default=0)
     
-    def __init__(self, username, password, is_admin=False, frogvatar_eyes=0, frogvatar_mouth=0):
+    def __init__(self, username, is_admin=False, frogvatar_eyes=0, frogvatar_mouth=0):
         
         # username: str
         # password: str
         
         self.username = username
-        self.set_password(password)
         self.date = datetime.utcnow()
         self.is_admin = is_admin
         self.frogvatar_eyes = frogvatar_eyes
         self.frogvatar_mouth = frogvatar_mouth
-        
-    def set_password(self, password):
-        self.pw_hash = generate_password_hash(password)
-    
-    def check_password(self, password):
-        return check_password_hash(self.pw_hash, password)
         
     def create_room(self, name, type=1, persistent=False):
         new_room = Room(name, self.id)
         db.session.add(new_room)
         db.session.commit()
         return new_room
-        
+    
+    # creates a persistent MODEL of a socket 
     def create_socket(self, sid, rid):
         socket = Socket.query.filter_by(user=self,sid=sid).first()
         if not socket:
@@ -97,15 +94,16 @@ class User(db.Model):
         self.auth_token = generate_random_string(35)
         db.session.commit()
         return self.auth_token
-        
+    
+    def check_auth_token(self, token):
+        return self.auth_token == token 
        
     def create_pictionary_room(self, name, turn_length=6000, max_rounds=3, word_list=[], persistent=False):
         new_pictionary_room = PictionaryManager(name, self.id, turn_length, max_rounds, word_list)
         db.session.add(new_pictionary_room)
         db.session.commit()
         return new_pictionary_room
-    
-
+        
         
 class Room(db.Model):
     

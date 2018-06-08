@@ -21,7 +21,7 @@ from datetime import datetime, timedelta
 from operator import methodcaller
 
 app = models.app
-app.config['SECRET_KEY'] = 'THIS IS NOT THE ACTUAL SECRET KEY LOL'
+app.config['SECRET_KEY'] = 'secret!'
 
 
 socketio = SocketIO(app)
@@ -43,7 +43,7 @@ def login_required(f):
         if not get_user():
             flash('Not logged in.', 'error')
             
-            return redirect(url_for('login'))
+            return redirect(url_for('register'))
         
         return f(*args, **kwargs)
 
@@ -292,25 +292,12 @@ def ready():
     
     if not pr.started and pr.majority_ready():
         pictionary_start_game()
-    
-
-
-@app.route('/login', methods=['GET', 'POST'])
-@clear_session
-def login():
-    return controllers.login()
-    
-@app.route('/logout')
-@clear_session
-def logout():
-    return controllers.logout()
-    
+      
     
 @app.route('/register', methods=['GET', 'POST'])
 @clear_session
 def register():
-    return controllers.register()
-    
+    return controllers.make_user()
 
 @app.route('/create_room')
 @login_required
@@ -334,7 +321,7 @@ def index():
 def home():
     if get_user():
         return redirect(url_for('index'))
-    return redirect(url_for('login'))
+    return redirect(url_for('register'))
   
 @app.route('/canvas/<room_code>')
 @login_required  
@@ -459,16 +446,14 @@ def delete_rooms():
 def prune():
     deadline = datetime.utcnow() - timedelta(seconds=30)
     for s in models.Socket.query.filter(models.Socket.last_active_time <= deadline).all():
-        print(s)
         s.destroy()
     deadline = datetime.utcnow() - timedelta(seconds=300)
     for r in models.Room.query.filter(models.Room.last_active_time <= deadline).filter_by(persistent=False).all():
-        print(r)
         r.destroy()
-
-
-
+#	for u in models.User.query.filter_by(models.User.last_active_time <= deadline).all():
+#		u.destroy()
+		
 if __name__ == '__main__':
     prune()
     delete_rooms()
-    socketio.run(app,host='0.0.0.0')
+    socketio.run(app,debug=True)
