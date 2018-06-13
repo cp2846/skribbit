@@ -300,8 +300,9 @@
 
             if (e.keyCode == 13) {
                 sendMessage();
+                if (event.preventDefault) event.preventDefault();
                 clearTextarea();
-            }
+            } 
             
         }
 		function clearTextarea() {

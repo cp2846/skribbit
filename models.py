@@ -16,10 +16,11 @@ from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 from random import SystemRandom
 from datetime import datetime, timedelta
+import outside
 
 
 app = Flask(__name__, static_url_path='/resources')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = outside.database_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
@@ -60,11 +61,9 @@ class User(db.Model):
 
     frogvatar_eyes = db.Column(db.Integer(), default=0)
     frogvatar_mouth = db.Column(db.Integer(), default=0)
+    last_active_time = db.Column(db.DateTime)
     
     def __init__(self, username, is_admin=False, frogvatar_eyes=0, frogvatar_mouth=0):
-        
-        # username: str
-        # password: str
         
         self.username = username
         self.date = datetime.utcnow()
@@ -103,6 +102,10 @@ class User(db.Model):
         db.session.add(new_pictionary_room)
         db.session.commit()
         return new_pictionary_room
+    
+    def record_activity(self):
+        self.last_active_time = datetime.utcnow()
+        db.session.commit()
         
         
 class Room(db.Model):

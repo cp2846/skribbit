@@ -3,7 +3,7 @@
         <script src="{{url_for('static', filename='artisan.js')}}"></script>
         <script type="text/javascript" src="{{url_for('static', filename='socketio.min.js')}}"></script>
         <script>
-            var socket = io.connect('http://localhost:5000');
+            var socket = io.connect('localhost:5000');
 
             socket.on('connect', function() {
                 room_code = '{{ room.room_code }}';
