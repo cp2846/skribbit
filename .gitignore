@@ -2,4 +2,4 @@ __pycache__/
 *.pyc
 migrations/
 outside.py
-skribbit.db
+*.db
