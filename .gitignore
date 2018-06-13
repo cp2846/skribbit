@@ -1,7 +1,7 @@
 __pycache__/
 *.pyc
 migrations/
-*.db
+*.db*
 *outside.py*
 
 

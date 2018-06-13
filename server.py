@@ -127,6 +127,25 @@ def record_activity(f):
     return wrapped    
 
     
+    
+@socketio.on('get_rooms_info')
+@clear_session
+def get_rooms_info(json):
+    data = json
+    return_data = {}
+    auth_token = data["auth_token"]
+    user = models.User.query.filter_by(auth_token=auth_token).first()
+    if not user:
+        emit('noauth')
+    else:
+        rooms = models.Room.query.all()
+        rooms = [[r.name, r.get_active_user_count(), r.room_code] for r in sorted(rooms, key=methodcaller('get_active_user_count'))[::-1]]
+        return_data['r'] = rooms
+        emit('rooms_info', flask_json.dumps(return_data), room=request.sid, include_self=True)
+        
+
+
+
 @socketio.on('join')
 @clear_session
 def handle_join(json):

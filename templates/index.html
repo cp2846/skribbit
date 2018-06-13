@@ -1,7 +1,17 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type="text/javascript" src="{{url_for('static', filename='socketio.min.js')}}"></script>
          <link href="{{url_for('static',filename='style.css')}}" rel="stylesheet">
+         <script>
+            var socket = io.connect('localhost:5000');
+
+            socket.on('connect', function() {
+                user_auth = '{{ user.auth_token }}';
+                socket.emit('lobby_join', {'auth_token':user_auth});
+            });
+
+        </script>
          <style type="text/css">
             .rooms {
                 width: 600px;
@@ -66,26 +76,67 @@
                        {% include 'frogvatar-container.html' %}
                     </div>
                 </div>
-                <div class="rooms">
-                <div class="room">
+                <div class="rooms" id="rooms">
                     
+                    {% for r in rooms %}
+                    <div class="room">
                         
-                   
-                    <div class="room-title">Room Name</div>
-                    <div class="room-count">Online </div>
-                </div>
-                {% for r in rooms %}
-                <div class="room">
-                    
-                        
-                   
-                    <div class="room-title"><a href="{{url_for('canvas',room_code=r.room_code)}}">{{ r.name }}</a></div>
-                    <div class="room-count"> {{ r.get_active_users()|length }} </div>
-                </div>
-                 {% endfor %}
+                            
+                       
+                        <div class="room-title"><a href="{{url_for('canvas',room_code=r.room_code)}}">{{ r.name }}</a></div>
+                        <div class="room-count"> {{ r.get_active_users()|length }} </div>
+                    </div>
+                   {% endfor %}
             </div>
         </div>
         <script>
+        
+            function getRoomsInfo() {
+                user_auth = '{{ user.auth_token }}';
+                socket.emit('get_rooms_info', {'auth_token':user_auth});
+            }
+            function pingServer() {
+                setTimeout(function() {
+                    getRoomsInfo();
+                    pingServer();
+                }, 3200);
+            }
+            
+            socket.on('rooms_info', function(data) {
+                var roomsContainer = document.getElementById('rooms');
+                roomsContainer.innerHTML = "";
+                // add table header
+                roomsContainer.innerHTML += "<div class='room'><div class='room-title'>Room Name</div><div class='room-count'>Online </div></div>";
+                // build the rest of the table
+                data = JSON.parse(data);
+                for (var i = 0; i < data['r'].length; i++) {
+                   var room = document.createElement("div");
+                   var roomTitle = document.createElement("div");
+                   var roomCount = document.createElement("div");
+                   var roomLink = document.createElement("a");
+                   
+                   room.classList.add("room");
+                   roomTitle.classList.add("room-title");
+                   
+                   roomCount.classList.add("room-count");
+                   
+                   
+                   roomCount.textContent = data['r'][i][1];
+                   roomLink.textContent = data['r'][i][0];
+                   roomLink.href = '/canvas/' + data['r'][i][2];
+                   
+                   roomTitle.appendChild(roomLink);
+                   room.appendChild(roomTitle);
+                   room.appendChild(roomCount);
+                   roomsContainer.appendChild(room);
+                   
+                }
+                if (data['r'].length == 0) {
+                    roomsContainer.innerHTML += "<div class='room'><p>No rooms online. <a href='/create_room'>Create one</a>!</p></div>";
+                }
+            });
+            getRoomsInfo();
+            pingServer();
             eye = '{{ user.frogvatar_eyes }}';
             mouth = '{{ user.frogvatar_mouth }}';
             setEyes();
