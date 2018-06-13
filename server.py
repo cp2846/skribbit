@@ -19,9 +19,10 @@ import controllers
 from functools import wraps
 from datetime import datetime, timedelta
 from operator import methodcaller
+import outside
 
 app = models.app
-app.config['SECRET_KEY'] = 'secret!'
+app.config['SECRET_KEY'] = outside.secret_key
 
 
 socketio = SocketIO(app)
@@ -119,6 +120,8 @@ def record_activity(f):
     def wrapped(*args, **kwargs):
         sock = get_socket(request.sid)
         sock.record_activity()
+        sock.room.record_activity()
+        sock.user.record_activity()
         prune()
         return f(*args, **kwargs)
     return wrapped    
@@ -238,7 +241,7 @@ def socket_alive():
 def input(data):
     return_data = {}
     socket = get_socket(request.sid)
-    if "i" in data and controllers.validate_inputs(data["i"]):
+    if "i" in data: #and controllers.validate_inputs(data["i"]):
         return_data["rid"] = socket.room.id
         return_data["uid"] = socket.user.id
         return_data["i"] = data["i"]
@@ -449,11 +452,11 @@ def prune():
         s.destroy()
     deadline = datetime.utcnow() - timedelta(seconds=300)
     for r in models.Room.query.filter(models.Room.last_active_time <= deadline).filter_by(persistent=False).all():
-        r.destroy()
-#	for u in models.User.query.filter_by(models.User.last_active_time <= deadline).all():
-#		u.destroy()
+       r.destroy()
+    deadline = datetime.utcnow() - timedelta(seconds=3000)
+    models.User.query.filter(models.User.last_active_time <= deadline).filter_by(is_admin=False).delete()
+    pass
 		
 if __name__ == '__main__':
     prune()
-    delete_rooms()
     socketio.run(app,debug=True)
