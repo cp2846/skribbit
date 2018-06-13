@@ -107,7 +107,7 @@
         
     </div>
     <div class="chat-input" id="chat-input">
-      <textarea class="chat-textarea" id="chat-textarea" onkeypress="handleInput(event)"></textarea>
+      <textarea class="chat-textarea" id="chat-textarea" onkeypress="handleInput(event);"></textarea>
       
      <button class="form-button right" onclick="sendMessage()" >Send</button>
     </div>
@@ -265,6 +265,7 @@
             if (msg) {
                 socket.emit('chat_send', {'message':msg});
             }
+			document.getElementById("chat-textarea").value = "";
             
         }
         
@@ -299,10 +300,14 @@
 
             if (e.keyCode == 13) {
                 sendMessage();
-                document.getElementById("chat-textarea").value = "";
+                clearTextarea();
             }
             
         }
+		function clearTextarea() {
+			document.getElementById("chat-textarea").value = "";
+			
+		}
     
     </script>
     
