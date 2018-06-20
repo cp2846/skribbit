@@ -474,7 +474,7 @@ def prune():
        r.destroy()
     deadline = datetime.utcnow() - timedelta(seconds=3000)
     models.User.query.filter(models.User.last_active_time <= deadline).filter_by(is_admin=False).delete()
-    pass
+
 		
 if __name__ == '__main__':
     prune()
