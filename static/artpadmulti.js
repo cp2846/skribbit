@@ -282,15 +282,17 @@ function MultiUserArtPad(container) {
     }
     
     
-    this.getBrushColor = function(userID, color) {
+    this.getBrushColor = function(userID) {
         var user = this.fetchUser(userID);
         return user.brushColor;
     }
     
-    this.getBrushSize = function(userID, size) {
+    this.getBrushSize = function(userID) {
         var user = this.fetchUser(userID);
         return user.brushSize;
     }
+    
+    
     
     
     this.setColorMode = function(userID, color) {
@@ -332,9 +334,45 @@ function MultiUserArtPad(container) {
         if (user.undoSequence.length > 0) {
             var lastUndo = user.undoSequence.pop();
             
-            //for (var i = lastUndo[0]; i <= lastUndo[1]; i++) {
-            //    this.playInput(user.id, user.inputSequence[i]);
-            //}
+            // must account for the brush settings at the time of the redone action!
+            var oldColor = this.getBrushColor(userID);
+            var newColor = oldColor;
+            
+            var oldAlpha = user.brushAlpha;
+            var newAlpha = oldAlpha;
+            
+            var oldSize = this.getBrushSize(userID);
+            var newSize = oldSize;
+            
+            
+            for (var i = lastUndo[0]; i >= 0; i--) {
+                if (user.inputSequence[i][0] == "2"){
+                    newColor = user.inputSequence[i][1];
+                    break;
+                }
+            }
+            
+            for (var i = lastUndo[0]; i >= 0; i--) {
+                if (user.inputSequence[i][0] == "3"){
+                    newSize = user.inputSequence[i][1];
+                    break;
+                }
+            }
+            
+            for (var i = lastUndo[0]; i >= 0; i--) {
+                if (user.inputSequence[i][0] == "10"){
+                    newAlpha = user.inputSequence[i][1];
+                    break;
+                }
+            }
+            
+            user.brushColor = newColor;
+            for (var i = lastUndo[0]; i <= lastUndo[1]; i++) {
+                this.playInput(user.id, user.inputSequence[i]);
+            }
+            user.brushColor = oldColor;
+            user.brushSize = oldSize;
+            user.brushAlpha = oldAlpha;
             
         }
         
@@ -350,7 +388,7 @@ function MultiUserArtPad(container) {
         
         this.redo(this.localUser.id);
         this.localUser.handleLocalInput([7]);
-        this.userReplay(this.localUser.id);
+        
     }
     
     this.localReset = function() {
@@ -781,13 +819,7 @@ function ArtPadUser(userID, artpad) {
 
 
 
-/*
 
- thanks to AJFarkas from
- https://stackoverflow.com/questions/21646738/convert-hex-to-rgba 
- for this code snippet!
- 
-*/
 function hexToRGB(hex, alpha) {
     var r = parseInt(hex.slice(1, 3), 16),
         g = parseInt(hex.slice(3, 5), 16),
@@ -800,11 +832,6 @@ function hexToRGB(hex, alpha) {
     }
 }
 
-/*
-    from
-    https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
-    :P
-*/
 function rgbToHex(r, g, b) {
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
