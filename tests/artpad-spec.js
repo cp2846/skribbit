@@ -99,7 +99,8 @@ describe("Test feeding user input and replaying canvas", function() {
     
     it("replays some user inputs (normal)", function() {
         for (var i = 0; i < inputs.length; i++) {
-            u = artPad.fetchUser(i);
+            artPad.addUser(i);
+            var u = artPad.fetchUser(i);
             oldInputs = JSON.stringify(u.inputSequence);
             artPad.replay(u.id);
             expect(JSON.stringify(u.inputSequence)).toBe(oldInputs);   
