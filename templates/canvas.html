@@ -58,7 +58,7 @@
                 max-width:1710px;
                 overflow-wrap: break-word;
                 width:95%;
-                win-width:1300px;
+                min-width:900px;
             }
             .color {
                 width:20%;
@@ -166,26 +166,25 @@
                 console.log("n using");
                     artPad.using = false;
                 }
-
+                
                 socket.on('room_history', function(data) {
                     if (data) {
                         var JSONdata = JSON.parse(data);
+                        
                         for (var i = 0; i < JSONdata.length; i++) {
                             
                             for (var j = 0; j < JSONdata[i].data.length; j++) {
                                 var inputStr = JSONdata[i].data[j];
-                     
-                                inputStr = inputStr.replace(/True/g, 'true');
-                                inputStr = inputStr.replace(/False/g, 'false');
-                                inputStr = inputStr.replace(/'/g, '"');
-                                inputStr = inputStr.replace(/None/g, '"undefined"');
+                                
+                              
+                                
                                 inputJSON = JSON.parse(inputStr);
                                 artPad.loadInputs(JSONdata[i].uid, inputJSON);
+                                
                             }
                             
                         }
                         for (var i = 0; i < artPad.users.length; i++) {
-                        
                             artPad.longFormReplay(artPad.users[i].id);
                         }
                         

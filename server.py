@@ -145,7 +145,9 @@ def get_rooms_info(json):
         
 
 
-
+"""
+    Defines the behavior when a player joins a room.
+"""
 @socketio.on('join')
 @clear_session
 def handle_join(json):

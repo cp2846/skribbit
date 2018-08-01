@@ -14,7 +14,6 @@
         </script>
          <style type="text/css">
             .rooms {
-                width: 600px;
                 border: 1px solid #ddd;
                 overflow-y: scroll;
                 overflow-wrap: break-word;
@@ -24,6 +23,8 @@
                 background-color: white;
                 max-height:800px;
                 text-align:left;
+                width:100%;
+                
             }
             .room {
                 margin:5px;
@@ -47,14 +48,13 @@
             }
             .sidebar {
                 float:left;
-                width:300px;
                 border-radius:5px;
-                display:inline-table;
+                
             }
             .room-wrapper {
                 overflow: auto;
-    
-                display: inline-table;
+                width:95%;
+                
                 margin: auto;
             }
             .page-wrapper {
@@ -69,24 +69,27 @@
         {% include 'flashes.html' %}
         <div class="page-wrapper">
             <div class="room-wrapper">
-                <div class="sidebar">
+                <div class="sidebar col-5 no-display-small">
                    
                    <div class="bordered box centered-contents">
                        <h3>{{ user.username }}</h3>
                        {% include 'frogvatar-container.html' %}
                     </div>
                 </div>
-                <div class="rooms" id="rooms">
-                    
-                    {% for r in rooms %}
-                    <div class="room">
+                <div class="col-6">
+                    <div class="rooms" id="rooms">
                         
+                        {% for r in rooms %}
+                        <div class="room">
                             
-                       
-                        <div class="room-title"><a href="{{url_for('canvas',room_code=r.room_code)}}">{{ r.name }}</a></div>
-                        <div class="room-count"> {{ r.get_active_users()|length }} </div>
+                                
+                           
+                            <div class="room-title"><a href="{{url_for('canvas',room_code=r.room_code)}}">{{ r.name }}</a></div>
+                            <div class="room-count"> {{ r.get_active_users()|length }} </div>
+                        </div>
+                       {% endfor %}
                     </div>
-                   {% endfor %}
+                </div>
             </div>
         </div>
         <script>

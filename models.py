@@ -17,6 +17,7 @@ from flask_migrate import Migrate, MigrateCommand
 from random import SystemRandom
 from datetime import datetime, timedelta
 import outside
+import json
 
 
 app = Flask(__name__, static_url_path='/resources')
@@ -430,7 +431,7 @@ class Socket(db.Model):
         db.session.commit()
         
     def push_input(self, data):
-        inp = UserInput(self.user.id, self.room.id, str(data))
+        inp = UserInput(self.user.id, self.room.id, json.dumps(data))
         db.session.add(inp)
         db.session.commit()
     

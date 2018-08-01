@@ -34,12 +34,12 @@ describe("Test user functions", function() {
       expect(JSON.stringify(user3.inputSequence)).toBe('[]'); 
     });
     
-    it("sets a user's brush brush color", function() {
+    it("sets a user's brush color", function() {
         artPad.setBrushColor("user3", "#ab7d9f");
         expect(user3.brushColor).toBe("#ab7d9f");
         expect(artPad.getBrushColor("user3")).toBe("#ab7d9f");
     });
-    it("sets a user's brush brush size", function() {
+    it("sets a user's brush size", function() {
         artPad.setBrushSize("user2", 3);
         expect(user2.brushSize).toBe(3);
         expect(artPad.getBrushSize("user2")).toBe(3);
