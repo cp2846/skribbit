@@ -111,5 +111,78 @@ describe("Test feeding user input and replaying canvas", function() {
     
 });
 
+describe("Test artpad behavior", function() {
+    
+    sampleAction = '[[4,true],[1,277,151,277,151],[1,277,151,277,151],[1,277,151,264,155],[1,264,155,236,157],[1,236,157,222,154],[4,false]]';
+    sampleAction = JSON.parse(sampleAction);
+    
+      for (var i = 0; i < artPad.users.length; i++) {
+          user = artPad.users[i];
+          
+          it("loads an action for " + user.id, function() {
+              oldSize = user.inputSequence.length;
+              artPad.loadInputs(user.id, sampleAction);
+              newSize = user.inputSequence.length;
+              expect(newSize - oldSize).toBe(sampleAction.length);
+          });
+          it("undoes the action", function() {
+            oldUndoCount = user.undoSequence.length;
+            artPad.undo(user.id);
+            expect(user.undoSequence[user.undoSequence.length-1][1]).toBe(user.inputSequence.length - 1);
+            expect(user.undoSequence[user.undoSequence.length-1][0]).toBe(user.inputSequence.length - sampleAction.length);
+            expect(user.undoSequence.length - oldUndoCount).toBe(1);
+          });
+          it("redoes the action", function() {
+            oldUndoCount = user.undoSequence.length;
+            artPad.redo(user.id);
+            expect(oldUndoCount - user.undoSequence.length).toBe(1);
+          });
+          it("redoes the action again", function() {
+            oldUndoCount = user.undoSequence.length;
+            oldInputs = user.inputSequence;
+            artPad.redo(user.id);
+            expect(oldUndoCount - user.undoSequence.length).toBe(0);
+            expect(user.inputSequence).toBe(oldInputs);
+          });
+          it("undoes the last action", function() {
+            oldUndoCount = user.undoSequence.length;
+            artPad.undo(user.id);
+            expect(user.undoSequence[user.undoSequence.length-1][1]).toBe(user.inputSequence.length - 1);
+            expect(user.undoSequence[user.undoSequence.length-1][0]).toBe(user.inputSequence.length - sampleAction.length);
+            expect(user.undoSequence.length - oldUndoCount).toBe(1);
+          });
+          
+          
+          it("deletes undos", function() {
+            oldUndoCount = user.undoSequence.length;
+            oldInputSize = user.inputSequence.length;
+            artPad.deleteUndos(user.id);
+            
+            if (oldUndoCount > 0) {
+                expect(user.inputSequence.length < oldInputSize).toBe(true);
+            }
+            expect(user.undoSequence.length).toBe(0);
+          });
+          
+          it("tries to undo on empty input", function() {
+            user.inputSequence = [];
+            artPad.undo(user.id);
+            expect(user.inputSequence.length).toBe(0);
+            expect(user.undoSequence.length).toBe(0);
+          });
+          
+          it("tries to redo on empty input", function() {
+            user.inputSequence = [];
+            artPad.redo(user.id);
+            expect(user.inputSequence.length).toBe(0);
+            expect(user.undoSequence.length).toBe(0);
+          });
 
+
+    }
+
+    
+   
+    
+});
 
