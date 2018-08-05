@@ -1,0 +1,47 @@
+.rooms {
+    border: 1px solid #ddd;
+    overflow-y: scroll;
+    overflow-wrap: break-word;
+    border-radius: 6px;
+    float: left;
+    margin: 5px;
+    background-color: white;
+    max-height:800px;
+    text-align:left;
+    width:100%;
+    
+}
+.room {
+    margin:5px;
+    border: 1px solid #ddd;
+    display:flex;
+
+}
+.room-title {
+    padding:5px;
+    width:70%;
+    float:left;
+    margin:auto;
+}
+.room-count {
+    padding:5px;
+    width:28%;
+    margin:auto;
+    float:right;
+    color:#bbb;
+    text-align:center;
+}
+.sidebar {
+    float:left;
+    border-radius:5px;
+    
+}
+.room-wrapper {
+    overflow: auto;
+    width:95%;
+    
+    margin: auto;
+}
+.page-wrapper {
+    text-align:center;
+}

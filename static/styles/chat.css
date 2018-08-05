@@ -1,0 +1,95 @@
+.chat-container {
+        
+    max-width:300px;
+    height:700px;
+    float:left;
+    width:16%;
+    
+}
+.chat-messages {
+    overflow-y:scroll;
+    height:580px;
+    border-left:1px solid #ddd;
+}
+.chat-message-body {
+    width:70%;
+    color:#aaa;
+    display:inline-block;
+    margin: 5px;
+}
+.chat-message {
+    border-bottom:1px solid #eee;
+    display:flex;
+    padding: 5px;
+    border: 1px solid #eee;
+    margin: 5px;
+    border-radius: 4px;
+    animation: border-change 0.3s;
+}
+.chat-input {
+    height:120px;
+    
+}
+.chat-textarea {
+
+
+    float:left;
+    height:70px;
+    border: 1px solid #aaa;
+    width: 95%;
+    margin:4px;
+    resize: none;
+}
+.chat-frogvatar-container {
+    vertical-align:middle;
+    height: 50px;
+    width: 50px;
+    position: relative;
+    margin: auto;
+    display: flex;
+    float:right;
+}
+.username {
+    color: #000;
+    margin-top: 5px;
+    display: inline-block;
+}
+.user-container {
+    height:700px;
+    float:left;
+    max-width:200px;
+    width:10%;
+}
+
+.user-box {
+    height:70px;
+    margin-bottom:5px;
+    margin-right:5px;
+    padding: 5px;
+    background-color:#fff;
+    display:flex;
+    border:1px solid #ddd;
+    border-radius:5px;
+    
+}
+
+.notification {
+    display: flex;
+    vertical-align:middle;
+    width:150px;
+    font-size:14px;
+    color:#000;
+    margin: auto;
+}
+.status-icon {
+    float:right;
+    max-height:50px;
+    max-width:50px;
+}
+.ribbot-text {
+    font-family: monospace; 
+}
+@keyframes border-change {
+    from { border-color:orangered; }
+    to   { border-color:#eee; }
+}

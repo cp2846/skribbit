@@ -1,0 +1,71 @@
+#idle-message-container {
+    height:100%;
+    width:100%;
+    background-color:#000;
+    opacity:0.9;
+    position:absolute;
+    z-index:10;
+    display:flex;
+}
+.idle-message {
+    display: flex;
+    vertical-align: middle;
+
+    text-align: center;
+    padding: auto;
+    margin: auto;
+    font-size: 32px;
+}
+#idle-message-text {
+    vertical-align: middle;
+    margin-left: 90px;
+    display: block;
+    color: #fff;
+    clear: both;
+}
+
+#ready-button {
+    height: 50px;
+    position: absolute;
+    top: 400;
+    width: 300;
+    padding: 6px;
+    text-align: center;
+    background-color: #4caf50;
+    color: #ffffff;
+    font-size: 32px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#timer-background {
+    position: absolute;
+    background-color: #000000;
+    opacity: 0.3;
+    width: 200px;
+    height: 20px;
+    top: 40;
+    right: 40;
+    z-index:11;
+}
+#timer-foreground {
+    position:absolute;
+    background-color:#000000;
+    opacity:0.8;
+    width:200px;
+    height:20px;
+    top: 40;
+    right: 40;
+    z-index:12;
+}
+#word-display {
+    position:absolute;
+    color:#000;
+    z-index:12;
+    top:40;
+    left:40;
+    font-size:20px;
+}
+.user-guessed {
+    border-color:#ff8a00;
+}

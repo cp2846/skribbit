@@ -1,0 +1,48 @@
+.control-button {
+    height:50px;
+    width:50px;
+    display:inline-block;
+    margin:5px;
+    cursor:pointer;
+}
+.unselectable {
+    -webkit-user-select: none;
+    -moz-user-select: -moz-none;
+    -ms-user-select: none;
+    user-select: none;
+
+}
+#colorpicker {
+    width:50px;
+    height:50px;
+    border:2px solid #eee;
+    margin:25px auto;
+    display:block;
+    cursor:pointer;
+}
+input[type="color"] {
+    -webkit-appearance: none;
+    border: none;
+    width: 32px;
+    height: 32px;
+}
+input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+input[type="color"]::-webkit-color-swatch {
+    border: none;
+}
+.canvas-wrapper {
+    display:table;
+    max-width:1710px;
+    overflow-wrap: break-word;
+    width:95%;
+    min-width:900px;
+}
+.color {
+    width:20%;
+    height:40px;
+    display:inline-block;
+    float:none;
+
+}
