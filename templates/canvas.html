@@ -28,7 +28,7 @@
             
             <script src="{{url_for('static', filename='artpad.js')}}"></script>
             <script src="{{url_for('static', filename='artpadmulti.js')}}"></script>
-            <script src="{{url_for('static', filename='html5kellycolorpicker.min.js')}}"></script>
+
 
 
             {% include 'chat.html' %}
@@ -48,13 +48,28 @@
 
             
             <div id="colorbar">
-                <div style="height:220px;width:120px;margin:0px auto;" >
-                    <canvas id='picker'  onmousedown="usingControls()" onmouseup="updateColor();notUsingControls();syncBrushValues();" style="margin-top:40px;" ></canvas>
-                    
-                </div>
+                <div class="color" style="background-color:#293194;" onclick="updateColor('#293194')"></div>
+                <div class="color" style="background-color:#1563b5;" onclick="updateColor('#1563b5')"></div>
+                <div class="color" style="background-color:#00a3cc;" onclick="updateColor('#00a3cc')"></div>
+                <div class="color" style="background-color:#10b147;" onclick="updateColor('#10b147')"></div>
+                <div class="color" style="background-color:#89c833;" onclick="updateColor('#89c833')"></div>
+                <div class="color" style="background-color:#f4ed00;" onclick="updateColor('#f4ed00')"></div>
+                <div class="color" style="background-color:#fec901;" onclick="updateColor('#fec901')"></div>
+                <div class="color" style="background-color:#fa9401;" onclick="updateColor('#fa9401')"></div>
+                <div class="color" style="background-color:#f56806;" onclick="updateColor('#f56806')"></div>
+                <div class="color" style="background-color:#f01917;" onclick="updateColor('#f01917')"></div>
+                
+                <div class="color" style="background-color:#e22ee9;" onclick="updateColor('#e22ee9')"></div>
+                <div class="color" style="background-color:#c60e7d;" onclick="updateColor('#c60e7d')"></div>
+                <div class="color" style="background-color:#6d2191;" onclick="updateColor('#6d2191')"></div>
+                <div class="color" style="background-color:#771c3f;" onclick="updateColor('#771c3f')"></div>
+                <div class="color" style="background-color:#20072c;" onclick="updateColor('#20072c')"></div>
+                <div class="color" style="background-color:#000000;" onclick="updateColor('#000000')"></div>
+                <div class="color" style="background-color:#757575;" onclick="updateColor('#757575')"></div>
+                <div class="color" style="background-color:#9d9d9d;" onclick="updateColor('#9d9d9d')"></div>
+                <div class="color" style="background-color:#dddddd;" onclick="updateColor('#dddddd')"></div>
+                <div class="color" style="background-color:#ffffff;" onclick="updateColor('#ffffff')"></div>
 
-                <input id="colorpicker" value="#000000" type="hidden">
-              
                 <div class="slidecontainer">
                   <input type="range" min="1" max="100" value="10" class="slider" id="sizeSlider" onchange="updateSize()" onmousedown="usingControls()" onmouseup="notUsingControls()">
                 </div>
@@ -79,6 +94,7 @@
                 document.getElementById('containerartpad').style.display = 'none';
                 siteData = {room: '{{ room.id }}', uid: '{{ user.id }}'};
                 staticURL = "{{url_for('static', filename='')}}";
+                
             </script>
             <script type="text/javascript" src="{{url_for('static', filename='scripts/canvas.js')}}"></script>
             

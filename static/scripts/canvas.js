@@ -1,11 +1,4 @@
 
-//initialize the color picker
-new KellyColorPicker({
-    place : 'picker',
-    input: 'colorpicker',
-    size: 120,
-});
-
 var inputBuffer = [];
 
 
@@ -64,7 +57,7 @@ socket.on('room_history', function(data) {
         inputBuffer.push(input);
     }
     
-    updateColor();
+    updateColor("#000000");
     updateAlpha();
     updateSize();
     removeSpinner();
@@ -110,7 +103,7 @@ function drawBrushSetting() {
 }
 
 function updateColor(color) {
-    color = document.getElementById("colorpicker").value;
+    
     artPad.localSetBrushColor(color);
     drawBrushSetting();
 }
@@ -157,7 +150,7 @@ function syncBrushValues() {
 function setColor(color) {
     var colorPicker = document.getElementById("colorpicker");
     colorPicker.value = color;
-    updateColor();
+    updateColor(color);
 }
 function socketAlive() {
      setTimeout(function() {
