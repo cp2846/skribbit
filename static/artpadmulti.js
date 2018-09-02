@@ -367,9 +367,13 @@ function MultiUserArtPad(container) {
             }
             
             user.brushColor = newColor;
+            user.brushAlpha = newAlpha;
+            user.brushSize = newSize;
             for (var i = lastUndo[0]; i <= lastUndo[1]; i++) {
-                this.playInput(user.id, user.inputSequence[i]);
+                this.playInput(user.id, user.inputSequence[i], true);
             }
+            
+
             user.brushColor = oldColor;
             user.brushSize = oldSize;
             user.brushAlpha = oldAlpha;
@@ -426,7 +430,7 @@ function MultiUserArtPad(container) {
     };
     
 
-    this.playInput = function(userID, input) {
+    this.playInput = function(userID, input, fromRedo) {
         
         var user = this.fetchUser(userID);
         
@@ -456,7 +460,9 @@ function MultiUserArtPad(container) {
 
             
         } else if (input.type == 7) { //REDO TYPE
-            this.redo(user.id);
+            if (!fromRedo) {
+                this.redo(user.id);
+            }
 
         }
          else if (input.type == 9) { 
@@ -758,7 +764,7 @@ function ArtPadUser(userID, artpad) {
     
     this.createLayerStack = function() {
         this.stackID = this.artpad.container.id+this.id+"LayerStack";
-        var layerContainerHTML = "<div id='"+this.stackID+"'></div>";
+        var layerContainerHTML = "<div id='"+this.stackID+"' style='position:relative'></div>";
         container = document.getElementById(this.artpad.container.id);
         container.innerHTML += layerContainerHTML;
 
@@ -772,14 +778,14 @@ function ArtPadUser(userID, artpad) {
             var mh = this.artpad.container.style.maxHeight;
             if (mw == "") mw = this.artpad.container.clientWidth;
             if (mh == "") mh = this.artpad.container.clientHeight;
-            layerContainer.innerHTML += "<canvas id='"+layerName+"' width='"+mw+"' height='"+mh+"' style='pointer-events:none;'></canvas>";
+            layerContainer.innerHTML += "<canvas id='"+layerName+"' width='1300' height='"+mh+"' style='pointer-events:none;position:absolute;top:0;left:0;'></canvas>";
             var newLayer = document.getElementById(layerName);
             newLayer.parentNode = this.artpad.container;
             this.layers.push(newLayer);
             
             
-            /* for some reason, canvas won't display properly unless Artisan's canvas contexts are wiped...
-                so I added a function for it in artisan to be called whenever a layer is added
+            /*  canvas won't display properly unless Artisan's canvas contexts are wiped...
+                so added a function for it in artisan to be called whenever a layer is added
             */
             artisan.clear.contexts(); 
             this.resetReferences();

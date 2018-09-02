@@ -1,6 +1,6 @@
 function ArtPad(container) {
     
-    container.innerHTML += "<canvas id='"+container.id+"artpad' width='500' height='500'></canvas>";
+    container.innerHTML += "<canvas id='"+container.id+"artpad'></canvas>";
     this.canvas = document.getElementById(container.id+"artpad");
 
     this.canvas.artpad = this;

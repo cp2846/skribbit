@@ -13,10 +13,8 @@ socket.on('join', function(data) {
 
 socket.on('receive_input', function(data) {
     data = JSON.parse(data);
-    
-    
     if (data) {
-        artPad.receiveInputs(data.uid, data.i, true);
+        executeAsync(artPad.receiveInputs(data.uid, data.i, true));
     }   
     
 });
@@ -28,7 +26,7 @@ function notUsingControls() {
     artPad.using = false;
 }
 
-socket.on('room_history', function(data) {
+function prepareCanvas(data) {
     if (data) {
         var JSONdata = JSON.parse(data);
         
@@ -50,18 +48,28 @@ socket.on('room_history', function(data) {
         }
         
     }
-    localUserId = siteData.uid;
-    artPad.localAddUser(localUserId);
-    
-    artPad.localUser.handleLocalInput = function(input) {
-        inputBuffer.push(input);
-    }
+
     
     updateColor("#000000");
     updateAlpha();
     updateSize();
     removeSpinner();
     pushInputs();
+    
+}
+
+
+socket.on('room_history', function(data) {
+    
+    localUserId = siteData.uid;
+    artPad.localAddUser(localUserId);
+    artPad.localUser.handleLocalInput = function(input) {
+        inputBuffer.push(input);
+    }
+    executeAsync(prepareCanvas(data));
+    
+    
+
 
 });
 
@@ -98,9 +106,14 @@ function updateSize() {
 // draws a preview of what the brush looks like in the sizeDisplay element
 function drawBrushSetting() {
     artisan.clearCanvas('sizeDisplay');
-    x = document.getElementById('colorbar').clientWidth / 2;
-    artisan.drawCircle('sizeDisplay', x, 100, sizeSlider.value * 0.5, artPad.getBrushColor(artPad.localUser.id), undefined, undefined, artPad.localUser.brushAlpha);
+    x = document.getElementById('toolbar').clientWidth / 2;
+    artisan.drawCircle('sizeDisplay', x, 75, sizeSlider.value * 0.5, artPad.getBrushColor(artPad.localUser.id), undefined, undefined, artPad.localUser.brushAlpha);
 }
+
+window.addEventListener('resize', 
+    function(){
+        if (artPad.localUser) drawBrushSetting(); 
+    }, true);
 
 function updateColor(color) {
     
@@ -130,7 +143,7 @@ function removeSpinner() {
     document.getElementById('spinnerContainer').style.display = 'none';
 }
 
-document.getElementById("container").onmouseenter = function() {
+document.getElementById("canvas-container").onmouseenter = function() {
     document.body.classList.add("unselectable");
 }
 
@@ -140,17 +153,10 @@ function syncBrushValues() {
 
     var alphaSlider = document.getElementById('alphaSlider');
     var alphaSlider = document.getElementById('alphaSlider');
-    var colorPicker = document.getElementById('colorpicker');
     alphaSlider.value = artPad.localUser.brushAlpha * 100;
-    sizeSlider.value = artPad.localUser.brushSize;      
-    colorPicker.value = artPad.localUser.brushColor;      
+    sizeSlider.value = artPad.localUser.brushSize;       
     drawBrushSetting();
 
-}
-function setColor(color) {
-    var colorPicker = document.getElementById("colorpicker");
-    colorPicker.value = color;
-    updateColor(color);
 }
 function socketAlive() {
      setTimeout(function() {
@@ -159,3 +165,7 @@ function socketAlive() {
     }, 3200);
 }
 socketAlive();
+
+function executeAsync(func) {
+    setTimeout(func, 0);
+}

@@ -1,0 +1,19 @@
+<html>
+<head>
+    <title>{% include 'sitetitle.html' %}</title>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='styles/ink/ink.min.css')}}"> <!-- inks css file -->
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}" /> <!-- main custom CSS file -->
+    <script type="text/javascript" src="{{url_for('static', filename='scripts/ink/ink-all.js')}}"></script> <!-- inks js bundle -->
+    {% block includes %} {% endblock %}
+</head>
+<body>
+
+{% include 'flashes.html' %}
+
+{% include 'topbar.html' %}
+
+{% block content %}
+
+{% endblock %}
+</body>
+</html>

@@ -1,47 +1,75 @@
-<html>
-    <head>
-		<title>{% include 'sitetitle.html'%} - Sign Up</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="{{url_for('static',filename='style.css')}}" rel="stylesheet">
-    </head>
-    <body>
-        {% include 'topbar.html' %}
-        {% include 'flashes.html' %}
+{% extends 'layout.html' %}
+
+{% block content %}
+<style>
+    .register-form {
+        margin: 0.3em auto;
+        float: none;
+    }
+    .centered {
+        float:none;
+        margin: auto;
+    }
+    
+    
+    .top-arrow {
+        position: absolute;
+        left: 0px;
+        top: 50px;
+        cursor:pointer;
+    }
+
+    .bottom-arrow {
+        position: absolute;
+        left: 0px;
+        top: 200px;
+        cursor:pointer;
+    }
+    .arrow-container {
+        height: 300px;
+        width: 40px;
+        position: relative;
+        margin: 0px auto;
+        display: inline-table;
+    }
+    .wrapper {
+        display:inline-block;
+    }
+
+</style>   
+    <div class="pane register-form all-50 medium-70 small-95 tiny-95" style="text-align:center">
        
-        <div class="sidebar login-box centered">
+       <div class="wrapper">
            
-           <div class="bordered box centered-contents">
+           <div class="arrow-container">
+                <img src="{{url_for('static',filename='arrow-left.gif')}}" class="top-arrow" onclick="prevEyes()"/>
+                <img src="{{url_for('static',filename='arrow-left.gif')}}" class="bottom-arrow" onclick="prevMouth()"/>
+           </div>
+           {% include 'frogvatar-container.html' %}
+           
+           <div class="arrow-container">
+                <img src="{{url_for('static',filename='arrow-right.gif')}}" class="top-arrow" onclick="nextEyes()"/>
+                <img src="{{url_for('static',filename='arrow-right.gif')}}" class="bottom-arrow" onclick="nextMouth()"/>
+           </div>
+           
+           <form class="centered-text ink-form" action="{{url_for('register')}}" method="post">
+               <div class="control-group">
+               <input type="text" class="all-50 centered" placeholder="username" name="username"></div>
                
-               <div class="arrow-container">
-                    <img src="{{url_for('static',filename='arrow-left.gif')}}" class="top-arrow" onclick="prevEyes()"/>
-                    <img src="{{url_for('static',filename='arrow-left.gif')}}" class="bottom-arrow" onclick="prevMouth()"/>
-               </div>
-               {% include 'frogvatar-container.html' %}
-               
-               <div class="arrow-container">
-                    <img src="{{url_for('static',filename='arrow-right.gif')}}" class="top-arrow" onclick="nextEyes()"/>
-                    <img src="{{url_for('static',filename='arrow-right.gif')}}" class="bottom-arrow" onclick="nextMouth()"/>
-               </div>
-               
-               <form action="{{url_for('register')}}" method="post">
-                   <div class="col-8 centered"><input class="form-input centered-contents" placeholder="username" name="username"></div>
-                   
-                   <input type="hidden" id="eyes-setting"  name="eyes-setting" value=""/>
-                   <input type="hidden" id="mouth-setting" name="mouth-setting" value="" />
-                   <button class="form-button" type="submit">Register!</button><br><br>
-               </form>
-             
-            </div>
-            
-            
+               <input type="hidden" id="eyes-setting"  name="eyes-setting" value=""/>
+               <input type="hidden" id="mouth-setting" name="mouth-setting" value="" />
+               <button class="ink-button all-50 centered" type="submit">Register!</button><br><br>
+           </form>
+         
         </div>
-        <script>
         
-           setEyes();
-            setMouth();
-        </script>
+        
+    </div>
+    <script>
+    
+        setEyes();
+        setMouth();
+    </script>
       
-
-    </body>
-
-</html>
+{% endblock %}
+  

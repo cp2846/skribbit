@@ -3,14 +3,11 @@
     width:100%;
     background-color:#000;
     opacity:0.9;
-    position:absolute;
-    z-index:10;
     display:flex;
 }
 .idle-message {
     display: flex;
     vertical-align: middle;
-
     text-align: center;
     padding: auto;
     margin: auto;
@@ -26,9 +23,6 @@
 
 #ready-button {
     height: 50px;
-    position: absolute;
-    top: 400;
-    width: 300;
     padding: 6px;
     text-align: center;
     background-color: #4caf50;

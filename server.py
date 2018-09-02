@@ -364,6 +364,9 @@ def canvas(room_code):
 @clear_session
 def create_room_pictionary():
     return controllers.create_room_pictionary()
+    
+    
+
    
 @app.route('/create_room_normal', methods=['GET','POST'])
 @login_required  

@@ -1,0 +1,46 @@
+<div class="column-group">
+    <div class="all-100" id="toolbar">
+        <div class="color" style="background-color:#293194;" onclick="updateColor('#293194')"></div>
+        <div class="color" style="background-color:#1563b5;" onclick="updateColor('#1563b5')"></div>
+        <div class="color" style="background-color:#00a3cc;" onclick="updateColor('#00a3cc')"></div>
+        <div class="color" style="background-color:#10b147;" onclick="updateColor('#10b147')"></div>
+        <div class="color" style="background-color:#89c833;" onclick="updateColor('#89c833')"></div>
+        <div class="color" style="background-color:#f4ed00;" onclick="updateColor('#f4ed00')"></div>
+        <div class="color" style="background-color:#fec901;" onclick="updateColor('#fec901')"></div>
+        <div class="color" style="background-color:#fa9401;" onclick="updateColor('#fa9401')"></div>
+        <div class="color" style="background-color:#f56806;" onclick="updateColor('#f56806')"></div>
+        <div class="color" style="background-color:#f01917;" onclick="updateColor('#f01917')"></div>
+        
+        <div class="color" style="background-color:#e22ee9;" onclick="updateColor('#e22ee9')"></div>
+        <div class="color" style="background-color:#c60e7d;" onclick="updateColor('#c60e7d')"></div>
+        <div class="color" style="background-color:#6d2191;" onclick="updateColor('#6d2191')"></div>
+        <div class="color" style="background-color:#771c3f;" onclick="updateColor('#771c3f')"></div>
+        <div class="color" style="background-color:#20072c;" onclick="updateColor('#20072c')"></div>
+        <div class="color" style="background-color:#000000;" onclick="updateColor('#000000')"></div>
+        <div class="color" style="background-color:#757575;" onclick="updateColor('#757575')"></div>
+        <div class="color" style="background-color:#9d9d9d;" onclick="updateColor('#9d9d9d')"></div>
+        <div class="color" style="background-color:#dddddd;" onclick="updateColor('#dddddd')"></div>
+        <div class="color" style="background-color:#ffffff;" onclick="updateColor('#ffffff')"></div>
+
+        <div class="slidecontainer">
+          <input type="range" min="1" max="100" value="10" class="slider" id="sizeSlider" onchange="updateSize()" onmousedown="usingControls()" onmouseup="notUsingControls()">
+        </div>
+        <div id ="sizeDisplayContainer" style="width: 100%;height: 150px;" onresize="updateSize()">
+            <canvas id="sizeDisplay"></canvas>
+        </div>
+        <div class="slidecontainer">
+          <input type="range" min="1" max="100" value="100" class="slider" id="alphaSlider" onchange="updateAlpha()" onmousedown="usingControls()" onmouseup="notUsingControls()">
+        </div>
+        <div style="column-group">
+            <div class="all-33 medium-100 small-100 tiny-100">
+                <button class="all-100 ink-button black" onclick="artPad.localUndo()">Undo</button>
+            </div>
+            <div class="all-33 medium-100 small-100 tiny-100">
+                <button class="all-100 ink-button black" onclick="artPad.localRedo()">Redo</button>
+            </div>
+            <div class="all-33 medium-100 small-100 tiny-100">
+                <button class="all-100 ink-button red" onclick="artPad.localReset()">Reset</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -99,7 +99,7 @@ socket.on('next_turn', function(data) {
     if (gameState.word) {
         showWord(gameState.word);
     }
-    updateColor();
+    updateColor(artPad.localUser.brushColor);
     updateSize();
     updateAlpha();
     syncBrushValues();
@@ -173,7 +173,7 @@ function nextTurn(time) {
             artPad.locked = false;
             unhideTools();
             hideChatInput();
-            updateColor();
+            updateColor(artPad.localUser.brushColor);
             updateSize();
             updateAlpha();
         }
@@ -242,12 +242,18 @@ function userReady() {
 }
 
 function hideTools() {
-    document.getElementById("colorbar").style.display = 'none';
-    document.getElementById("container").style.width="72%";
+    document.getElementById("toolbar-holder").style.display = 'none';
+    document.getElementById("canvas-wrapper").classList.remove("all-80");
+    document.getElementById("canvas-wrapper").classList.add("all-100");
+    document.getElementById("toolbar-holder").classList.add("all-0");
+    document.getElementById("toolbar-holder").classList.remove("all-20");
 }
 function unhideTools() {
-    document.getElementById("colorbar").style.display = 'block';
-    document.getElementById("container").style.width="60%";
+    document.getElementById("toolbar-holder").style.display = 'block';
+    document.getElementById("canvas-wrapper").classList.remove("all-100");
+    document.getElementById("canvas-wrapper").classList.add("all-80");
+    document.getElementById("toolbar-holder").classList.remove("all-0");
+    document.getElementById("toolbar-holder").classList.add("all-20");
 }
 
 pingServer();

@@ -1,27 +1,15 @@
-<style type="text/css">
-    .nav-button {
-            color: orangered;
-            float: right;
-            height: 40px;
-            padding: 5px 15px;
-            border-left: 2px solid #eee;
-            display:flex;
-            
-    }
-    .nav-text {
-        vertical-align: middle;
-        margin: auto;
-        
-    }
-
-</style>
-
-<div class="topbar">
-    <a href="{{ url_for('home') }}"><img src="{{url_for('static',filename='ribbit-logo.png')}}" class="logo-image" /></a>
-    {% if user %}
-        <a href="{{ url_for('index') }}" class="nav-button"><span class="nav-text">See All Rooms</span></a>
-        <a href="{{ url_for('create_room') }}" class="nav-button"><span class="nav-text">Create Room</span></a>
-    {% else %}
-        <a href="{{ url_for('register') }}" class="nav-button"><span class="nav-text">Sign up</span></a>
-    {% endif %}
-</div>
+<nav class="ink-navigation">
+    <ul class="menu horizontal black">
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+         {% if user %}
+        <li><a>Create Room</a>
+            <ul class="submenu">
+                <li><a href="{{ url_for('create_room_normal') }}">Free-For-All</a></li>
+                <li>
+                    <a href="{{ url_for('create_room_pictionary') }}">Pictionary</a>
+                </li>
+            </ul>
+        </li>
+        {% endif %}
+    </ul>
+</nav>

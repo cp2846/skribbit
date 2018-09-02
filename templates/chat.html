@@ -1,21 +1,37 @@
-<link rel="stylesheet" href="{{ url_for('static', filename='styles/chat.css') }}">
-    
-    
-    
-<div id="userbar" class="user-container no-display-small">
+<link rel="stylesheet" href="{{url_for('static', filename='styles/chat.css')}}"/>
 
-</div>
-<div id="chatbar" class="chat-container no-display-small">
-    <div class="chat-messages" id="chat-messages">
-        
+
+
+<div class="ink-grid">
+  <div class="column-group chat-holder">
+    <div class="all-20 medium-30 no-display-small no-display-tiny">
+      <div class="pane tall">
+      Online
+        <div class="column-group" id="users">
+            
+                <!-- users list -->
+        </div>
+      </div>
     </div>
-    <div class="chat-input" id="chat-input">
-      <textarea class="chat-textarea" id="chat-textarea"></textarea>
-      
-     <button class="form-button right" id="chat-button">Send</button>
+    
+    <div class="all-80 medium-70 small-100 tiny-100">
+      <div class="ink-form pane tall">
+            <div class="column-group">
+                
+                <!-- chat input-->
+                <div class="control-group all-100" id="chat-input">
+                    <div class="control append-button">
+                        <span><input type="text" id="chat-textarea"></span>
+                        <button class="ink-button" id="chat-button">Submit</button>
+                    </div>
+                </div>
+            </div>
+            <div id="messages">
+                
+                <!-- chat messages -->
+            </div>
+        </div>
     </div>
-    
-    
-    <script type="text/javascript" src="{{ url_for('static', filename='scripts/chat.js')}}"></script>
-    
+  </div>
 </div>
+<script type="text/javascript" src="{{ url_for('static', filename='scripts/chat.js')}}"></script>

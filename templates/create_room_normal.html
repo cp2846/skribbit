@@ -1,61 +1,15 @@
-<html>
-    <head>
-		<title>{% include 'sitetitle.html'%} - Create Room</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="{{url_for('static',filename='style.css')}}" rel="stylesheet">
-        <style type="text/css">
-        
-            .room-input {
-                width:80%;
-                border:1px solid #ddd;
-                padding:5px;
-                
-            }
-            .room-creation-form {
-                width:600px;
-                padding:20px;
+{% extends 'create_room.html' %}
 
-            }
-            .form-button
-            {
-                margin-top:12px;
-                margin-left:0px;
-                display:block;
-            }
-            .form-textarea {
-                width:100%;
-                height:200px;
-                display:block;
-                margin-top:15px;
-            }
-        
-        </style>
-    </head>
-    <body>
-        {% include 'topbar.html' %}
-        {% include 'flashes.html' %}
-       
-        <div class="room-creation-form centered box bordered">
-           
-            
-               
-               <form action="{{url_for('create_room_normal')}}" method="post">
-                   <p>Room Name</p><input class="room-input"  name="room_name" maxlength="30" required>
-                  
-                   
-                  
-                    <button class="form-button" type="submit">Create Room!</button>
-                  
-               </form>
-              
-            </div>
-            
-            
-        </div>
+{% block roomform %}
 
-        </script>
-      
 
-    </body>
+   
+    <div class="room-creation-form pane">
+       <form action="{{url_for('create_room_normal')}}" method="post">
+           <p>Room Name</p><input class="room-input"  name="room_name" maxlength="30" required>
+            <button class="ink-button form-button" type="submit">Create Room!</button>
+       </form>
+    </div>
 
-</html>
+    
+{% endblock %}

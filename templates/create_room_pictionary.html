@@ -1,66 +1,18 @@
-<html>
-    <head>
-		<title>{% include 'sitetitle.html'%} - Create Pictionary Room</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="{{url_for('static',filename='style.css')}}" rel="stylesheet">
-        <style type="text/css">
-        
-            .room-input {
-                width:80%;
-                border:1px solid #ddd;
-                padding:5px;
-                
-            }
-            .room-creation-form {
-                width:600px;
-                padding:20px;
-
-            }
-            .form-button
-            {
-                margin-top:12px;
-                margin-left:0px;
-                display:block;
-            }
-            .form-textarea {
-                width:100%;
-                height:200px;
-                display:block;
-                margin-top:15px;
-            }
-        
-        </style>
-    </head>
-    <body>
-        {% include 'topbar.html' %}
-        {% include 'flashes.html' %}
-       
-        <div class="room-creation-form centered box bordered">
-           
-            
-               
-               <form action="{{url_for('create_room_pictionary')}}" method="post">
-                   <p>Room Name</p><input class="room-input"  name="room_name" maxlength="30" required>
-                  <p>Turn Length (in seconds)</p>
-                   <input type="text" value="60" style="width:40px;" name="room_turn_length" maxlength="3" required>
-                   <p>Number of Rounds</p>
-                  <input type="text" name="room_max_rounds" style="width:40px;" maxlength="3" value="3" required>
-<textarea name="room_wordlist" class="form-textarea">
+{% extends 'create_room.html' %}          
+{% block roomform %}
+    <div class="room-creation-form pane">
+        <form action="{{url_for('create_room_pictionary')}}" method="post">
+            <p>Room Name</p><input class="room-input"  name="room_name" maxlength="30" required>
+            <p>Turn Length (in seconds)</p>
+            <input type="text" value="60" style="width:40px;" name="room_turn_length" maxlength="3" required>
+            <p>Number of Rounds</p>
+            <input type="text" name="room_max_rounds" style="width:40px;" maxlength="3" value="3" required>
+            <textarea name="room_wordlist" class="form-textarea">
 {% include 'wordslist.html' %}
-</textarea>
-                  
-                    <button class="form-button" type="submit">Create Room!</button>
-                  
-               </form>
-              
-            </div>
-            
-            
-        </div>
-
-        </script>
-      
-
-    </body>
-
-</html>
+            </textarea>
+                              
+            <button class="ink-button form-button" type="submit">Create Room!</button>
+          
+       </form>
+    </div>
+{% endblock %}

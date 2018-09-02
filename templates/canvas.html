@@ -1,113 +1,66 @@
-<html onmouseleave="stopPainting()">
-    <head>
-        <script src="{{url_for('static', filename='artisan.js')}}"></script>
-        <script type="text/javascript" src="{{url_for('static', filename='socketio.min.js')}}"></script>
-        <script>
+{% extends 'layout.html' %}
+
+
+{% block includes %}
+
+    <script type="text/javascript" src="{{url_for('static', filename='socketio.min.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='scripts/socket-connect.js')}}"></script>
+    <script>
           
-            var socket = io.connect('localhost:5000');
 
-            socket.on('connect', function() {
-                room_code = '{{ room.room_code }}';
-                user_auth = '{{ user.auth_token }}';
-                socket.emit('join', {'room':room_code, 'auth_token':user_auth});
-            });
+        socket.on('connect', function() {
+            room_code = '{{ room.room_code }}';
+            user_auth = '{{ user.auth_token }}';
+            socket.emit('join', {'room':room_code, 'auth_token':user_auth});
+        });
 
-        </script>
-        <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}" />
-        <link rel="stylesheet" href="{{url_for('static', filename='styles/canvas.css')}}" />
-        <style>
-        
-                
-            
-        </style>
-    </head>
-    <body id="page">
-        {% include 'topbar.html' %}
-        {% include 'flashes.html' %}
-        <div class="box canvas-wrapper centered">
-            
-            <script src="{{url_for('static', filename='artpad.js')}}"></script>
-            <script src="{{url_for('static', filename='artpadmulti.js')}}"></script>
+    </script>
+    <script src="{{url_for('static', filename='artisan.js')}}"></script> <!-- Artisan JS -->
+    <link rel="stylesheet" href="{{url_for('static', filename='styles/canvas.css')}}" /> <!-- canvas CSS file -->
+    <script src="{{url_for('static', filename='artpad.js')}}"></script>
+    <script src="{{url_for('static', filename='artpadmulti.js')}}"></script>
+    
+{% endblock %}
+
+{% block content %}    
 
 
 
-            {% include 'chat.html' %}
-            
-
-            
-            <div id="container" style="max-width:1100px;height:700px;" onmousedown="syncBrushValues();">
-                <div id="spinnerContainer" class="spinnerContainer">
-                    <img class="spinner" id="spinner" src="{{url_for('static', filename='spinner.gif')}}" />
-                </div>
-                {% if pictionary %}
-                    {% include 'pictionary-idle-message.html' %}
-                {% endif %}
-
+    <!-- main canvas and tools section -->
+    <div class="ink-grid">
+      <div class="column-group" id="art-content">
+          <div class="all-80 small-100 tiny-100 noselect" id="canvas-wrapper">
+              <div class="tall pane" id="canvas-container">
+                    <div id="spinnerContainer" class="spinnerContainer">
+                        <img class="spinner" id="spinner" src="{{url_for('static', filename='spinner.gif')}}" />
+                    </div>
+                    {% if pictionary %}
+                        {% include 'pictionary-idle-message.html' %}
+                    {% endif %}
+              </div>
+          </div>
+          <div class="all-20" id="toolbar-holder">
+            <div class="tall pane no-display-small">
+                {% include 'toolbar.html' %}
             </div>
-            
+          </div>
+      
+      </div>
+    </div>
 
-            
-            <div id="colorbar">
-                <div class="color" style="background-color:#293194;" onclick="updateColor('#293194')"></div>
-                <div class="color" style="background-color:#1563b5;" onclick="updateColor('#1563b5')"></div>
-                <div class="color" style="background-color:#00a3cc;" onclick="updateColor('#00a3cc')"></div>
-                <div class="color" style="background-color:#10b147;" onclick="updateColor('#10b147')"></div>
-                <div class="color" style="background-color:#89c833;" onclick="updateColor('#89c833')"></div>
-                <div class="color" style="background-color:#f4ed00;" onclick="updateColor('#f4ed00')"></div>
-                <div class="color" style="background-color:#fec901;" onclick="updateColor('#fec901')"></div>
-                <div class="color" style="background-color:#fa9401;" onclick="updateColor('#fa9401')"></div>
-                <div class="color" style="background-color:#f56806;" onclick="updateColor('#f56806')"></div>
-                <div class="color" style="background-color:#f01917;" onclick="updateColor('#f01917')"></div>
-                
-                <div class="color" style="background-color:#e22ee9;" onclick="updateColor('#e22ee9')"></div>
-                <div class="color" style="background-color:#c60e7d;" onclick="updateColor('#c60e7d')"></div>
-                <div class="color" style="background-color:#6d2191;" onclick="updateColor('#6d2191')"></div>
-                <div class="color" style="background-color:#771c3f;" onclick="updateColor('#771c3f')"></div>
-                <div class="color" style="background-color:#20072c;" onclick="updateColor('#20072c')"></div>
-                <div class="color" style="background-color:#000000;" onclick="updateColor('#000000')"></div>
-                <div class="color" style="background-color:#757575;" onclick="updateColor('#757575')"></div>
-                <div class="color" style="background-color:#9d9d9d;" onclick="updateColor('#9d9d9d')"></div>
-                <div class="color" style="background-color:#dddddd;" onclick="updateColor('#dddddd')"></div>
-                <div class="color" style="background-color:#ffffff;" onclick="updateColor('#ffffff')"></div>
+    <!-- lower chat and userbar section -->
+    {% include 'chat.html' %}
+      
 
-                <div class="slidecontainer">
-                  <input type="range" min="1" max="100" value="10" class="slider" id="sizeSlider" onchange="updateSize()" onmousedown="usingControls()" onmouseup="notUsingControls()">
-                </div>
-                <div id ="sizeDisplayContainer" style="width: 100%;height: 200px;" onresize="updateSize()">
-                    <canvas id="sizeDisplay"></canvas>
-                </div>
-                <div class="slidecontainer">
-                  <input type="range" min="1" max="100" value="100" class="slider" id="alphaSlider" onchange="updateAlpha()" onmousedown="usingControls()" onmouseup="notUsingControls()">
-                </div>
-                <div style="text-align:center">
-                    <img class="control-button" src="{{url_for('static', filename='undo.gif')}}" onclick="artPad.localUndo()" />
-                    <img class="control-button" src="{{url_for('static', filename='redo.gif')}}" onclick="artPad.localRedo()" />
-                    <img class="control-button" src="{{url_for('static', filename='reset.gif')}}" onclick="artPad.localReset()" />
-                </div>
-            </div>
-
-            
-            
-            <script>
-                var cv = document.getElementById("container");
-                artPad = new MultiUserArtPad(cv);
-                document.getElementById('containerartpad').style.display = 'none';
-                siteData = {room: '{{ room.id }}', uid: '{{ user.id }}'};
-                staticURL = "{{url_for('static', filename='')}}";
-                
-            </script>
-            <script type="text/javascript" src="{{url_for('static', filename='scripts/canvas.js')}}"></script>
-            
-               
-          
-            {% if pictionary %}
-                {% include 'pictionary.html' %}
-            {% endif %}
-
-            
-            
-            
-        </div>
-        
-    </body>
-</html>
+    <script>
+        var cv = document.getElementById("canvas-container");
+        artPad = new MultiUserArtPad(cv); 
+        siteData = {room: '{{ room.id }}', uid: '{{ user.id }}'};
+        staticURL = "{{url_for('static', filename='')}}";
+        document.getElementById('canvas-containerartpad').style.display = 'none';
+    </script>
+    <script type="text/javascript" src="{{url_for('static', filename='scripts/canvas.js')}}"></script>
+    {% if pictionary %}
+        {% include 'pictionary.html' %}
+    {% endif %}
+{% endblock %}

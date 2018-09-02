@@ -5,43 +5,31 @@ function appendChatMessage(uid, message) {
    var user = getUser(uid);
    var chatNode = document.createElement("div");
    var chatMessageUsername = document.createElement("span");
-   var chatMessageBody = document.createElement("div");
+   var chatMessageBody = document.createElement("span");
    
-   chatNode.classList.add("chat-message");
+   chatNode.classList.add("message");
    chatMessageUsername.classList.add("username");
    chatMessageBody.classList.add("chat-message-body");
    
-   var chatMessageBodyText = document.createElement("p");
    
    
    var messageFrogvatar = document.createElement("div");
    
    if (uid == 'ribbot') {
-        messageFrogvatar.innerHTML +=  "<img src=\""+staticURL + "ribbot.gif" + "\"class='frogvatar'/>";
-        chatNode.classList.add("ribbot-text");
-        chatMessageUsername.innerHTML = 'RIBBOT';
+        chatMessageUsername.textContent = "";
    } else {
-   
-   
-  
        
-       messageFrogvatar.innerHTML +=  "<img src=\""+staticURL + "head.gif" + "\"class='frogvatar'/>";
-       messageFrogvatar.innerHTML +=  "<img src=\""+staticURL  +"eyes-" + (user.frogvatarEyes + 1) + ".gif\"class='frogvatar'/>";
-       messageFrogvatar.innerHTML +=  "<img src=\""+staticURL  +"mouth-" + (user.frogvatarMouth + 1) + ".gif\"class='frogvatar'/>";
-       chatMessageUsername.innerHTML = user.username;
-       
-       
+       chatMessageUsername.textContent = user.username + ": ";
    }
-   messageFrogvatar.classList.add("chat-frogvatar-container");
+   
+   messageFrogvatar.classList.add("frogvatar-chat");
    message = String(message);
    
-   chatMessageBodyText.textContent = message;
-   chatMessageBody.appendChild(chatMessageUsername);
-   chatMessageBody.appendChild(chatMessageBodyText);
-
+   chatMessageBody.textContent = message;
+   chatNode.appendChild(chatMessageUsername);
    chatNode.appendChild(chatMessageBody);
-   chatNode.appendChild(messageFrogvatar);
-   messageContainer = document.getElementById("chat-messages");
+
+   messageContainer = document.getElementById("messages");
    messageContainer.appendChild(chatNode);
    messageContainer.scrollTop = messageContainer.scrollHeight;
    
@@ -51,23 +39,26 @@ function appendChatMessage(uid, message) {
 
         
 function showOnline() {
-    var userbar = document.getElementById("userbar");
+    var userbar = document.getElementById("users");
     userbar.innerHTML = "";
    for (var i = 0; i < chatUsers.length; i++) {
        user = chatUsers[i];
        if (user.online) {
            var userNode = document.createElement("div");
-           var userInfo = document.createElement("p");
+           var userInfo = document.createElement("span");
            
-           userNode.classList.add("user-box");
-           userInfo.classList.add("notification");
+           userInfo.classList.add("userInfo");
            
+           userNode.classList.add("user");
+           userNode.classList.add("pane");
+           userNode.classList.add("all-100");
+           userNode.classList.add("cell");
            
            var  userFrogvatar = document.createElement("div");
            
 
            
-           userFrogvatar.classList.add("chat-frogvatar-container");
+           userFrogvatar.classList.add("frogvatar-chat");
            
            userFrogvatar.innerHTML +=  "<img src=\""+staticURL  + "head.gif" + "\"class='frogvatar'/>";
            userFrogvatar.innerHTML +=  "<img src=\""+staticURL   +"eyes-" + (user.frogvatarEyes + 1) + ".gif\"class='frogvatar'/>";
@@ -96,10 +87,10 @@ function showOnline() {
             }
             userNode.appendChild(userInfo);
            
-           userNode.appendChild(userFrogvatar);
+            userNode.appendChild(userFrogvatar);
            
             
-           userbar.appendChild(userNode);
+            userbar.appendChild(userNode);
 
 
        }
