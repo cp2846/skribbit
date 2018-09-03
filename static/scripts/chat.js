@@ -64,26 +64,22 @@ function showOnline() {
            userFrogvatar.innerHTML +=  "<img src=\""+staticURL   +"eyes-" + (user.frogvatarEyes + 1) + ".gif\"class='frogvatar'/>";
            userFrogvatar.innerHTML +=  "<img src=\""+staticURL   +"mouth-" + (user.frogvatarMouth + 1) + ".gif\"class='frogvatar'/>";
            
-           userInfo.textContent = user.username;
+           userInfo.innerHTML = user.username;
            
-
-           
-          var crayon = "{{url_for('static', filename='crayon.gif')}}";
-          
-           if (typeof gameState !== 'undefined' && gameState.started && !gameState.idle && currentlyDrawingUser() && currentlyDrawingUser().uid == user.uid) {
-                userNode.innerHTML += "<img src=\""+ crayon + "class='status-icon'/>"
-           }
            if (typeof gameState !== 'undefined') { 
-                if (!gameState.started && user.ready) {
-                    
-                    userNode.innerHTML += "<img src=\""+ checkmark + "class='status-icon'/>";
-               }
+
                if (user.score) {
-                    userInfo.textContent = user.username + " (" + user.score + ")";
+                    userInfo.innerHTML = user.username + " (" + user.score + ")";
+               }
+               if (!gameState.started && user.ready) {
+                    userInfo.innerHTML += "<img src=\""+ staticURL + "checkmark.gif" +"\" class='status-icon'/>";
                }
                if (user.guessed_this_round) {
                     userNode.classList.add("user-guessed");
                }
+            }
+            if (typeof gameState !== 'undefined' && gameState.started && !gameState.idle && currentlyDrawingUser() && currentlyDrawingUser().uid == user.uid) {
+                userInfo.innerHTML += "<img src=\""+ staticURL + "crayon.gif" + "\" class='status-icon'/>";
             }
             userNode.appendChild(userInfo);
            

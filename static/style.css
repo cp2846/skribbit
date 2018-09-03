@@ -119,3 +119,7 @@ canvas {
 .centered-text {
     text-align:center;
 }
+.status-icon {
+    max-width:30px;
+    display:inline-block;
+}

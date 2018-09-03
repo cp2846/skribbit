@@ -42,7 +42,7 @@ socket.on('rooms_info', function(data) {
        
     }
     if (data['r'].length == 0) {
-        roomsContainer.innerHTML += "<div class='room'><p>No rooms online. <a href='/create_room'>Create one</a>!</p></div>";
+        roomsContainer.innerHTML += "<div class='room'><p>No rooms online. <a href='/create_room_normal'>Create one</a>!</p></div>";
     }
 });
 getRoomsInfo();
