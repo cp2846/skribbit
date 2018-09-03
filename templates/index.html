@@ -13,7 +13,12 @@
     </script>
      <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
         
-
+    <style>
+        .userbox {
+            margin: 0.5em 0px;
+            min-height:350px;
+        }
+    </style>
      
 
 
@@ -23,6 +28,7 @@
                <div class="all-30 no-display-medium pane centered-text userbox">
                    <h3>{{ user.username }}</h3>
                    {% include 'frogvatar-container.html' %}
+                   
                 </div>
             
                 <div class="all-70 medium-100 small-100 tiny-100">
