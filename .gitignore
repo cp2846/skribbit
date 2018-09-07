@@ -3,6 +3,5 @@ __pycache__/
 migrations/
 *.db*
 *outside.py*
-
-
+*socket_connect.js
 
