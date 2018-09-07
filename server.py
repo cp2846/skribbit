@@ -139,8 +139,8 @@ def get_rooms_info(json):
         emit('noauth')
     else:
         rooms = models.Room.query.all()
-        rooms = [[r.name, r.get_active_user_count(), r.room_code] for r in sorted(rooms, key=methodcaller('get_active_user_count'))[::-1]]
-        return_data['r'] = rooms
+        rooms = [{'name': r.name, 'user_count': r.get_active_user_count(), 'room_code': r.room_code} for r in sorted(rooms, key=methodcaller('get_active_user_count'))[::-1]]
+        return_data = rooms
         emit('rooms_info', flask_json.dumps(return_data), room=request.sid, include_self=True)
         
 

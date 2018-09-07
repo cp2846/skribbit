@@ -1,101 +1,33 @@
 var chatUsers = [];
 
-
-function appendChatMessage(uid, message) {
-   var user = getUser(uid);
-   var chatNode = document.createElement("div");
-   var chatMessageUsername = document.createElement("span");
-   var chatMessageBody = document.createElement("span");
-   
-   chatNode.classList.add("message");
-   chatMessageUsername.classList.add("username");
-   chatMessageBody.classList.add("chat-message-body");
-   
-   
-   
-   var messageFrogvatar = document.createElement("div");
-   
-   if (uid == 'ribbot') {
-        chatMessageUsername.textContent = "";
-   } else {
-       
-       chatMessageUsername.textContent = user.username + ": ";
-   }
-   
-   messageFrogvatar.classList.add("frogvatar-chat");
-   message = String(message);
-   
-   chatMessageBody.textContent = message;
-   chatNode.appendChild(chatMessageUsername);
-   chatNode.appendChild(chatMessageBody);
-
-   messageContainer = document.getElementById("messages");
-   messageContainer.appendChild(chatNode);
-   messageContainer.scrollTop = messageContainer.scrollHeight;
-   
-}
-
-
-
-        
 function showOnline() {
-    var userbar = document.getElementById("users");
-    userbar.innerHTML = "";
+   onlineUsers = [];
    for (var i = 0; i < chatUsers.length; i++) {
+       user.statusReady = false;
+       user.statusGuessed = false;
+       user.statusDrawing = false;
        user = chatUsers[i];
        if (user.online) {
-           var userNode = document.createElement("div");
-           var userInfo = document.createElement("span");
-           
-           userInfo.classList.add("userInfo");
-           
-           userNode.classList.add("user");
-           userNode.classList.add("pane");
-           userNode.classList.add("all-100");
-           userNode.classList.add("cell");
-           
-           var  userFrogvatar = document.createElement("div");
-           
-
-           
-           userFrogvatar.classList.add("frogvatar-chat");
-           
-           userFrogvatar.innerHTML +=  "<img src=\""+staticURL  + "head.gif" + "\"class='frogvatar'/>";
-           userFrogvatar.innerHTML +=  "<img src=\""+staticURL   +"eyes-" + (user.frogvatarEyes + 1) + ".gif\"class='frogvatar'/>";
-           userFrogvatar.innerHTML +=  "<img src=\""+staticURL   +"mouth-" + (user.frogvatarMouth + 1) + ".gif\"class='frogvatar'/>";
-           
-           userInfo.innerHTML = user.username;
            
            if (typeof gameState !== 'undefined') { 
 
-               if (user.score) {
-                    userInfo.innerHTML = user.username + " (" + user.score + ")";
-               }
                if (!gameState.started && user.ready) {
-                    userInfo.innerHTML += "<img src=\""+ staticURL + "checkmark.gif" +"\" class='status-icon'/>";
+                    user.statusReady = true;
                }
                if (user.guessed_this_round) {
-                    userNode.classList.add("user-guessed");
+                    user.statusGuessed = true;
                }
             }
             if (typeof gameState !== 'undefined' && gameState.started && !gameState.idle && currentlyDrawingUser() && currentlyDrawingUser().uid == user.uid) {
-                userInfo.innerHTML += "<img src=\""+ staticURL + "crayon.gif" + "\" class='status-icon'/>";
+                user.statusDrawing = true;
             }
-            userNode.appendChild(userInfo);
-           
-            userNode.appendChild(userFrogvatar);
-           
-            
-            userbar.appendChild(userNode);
-
-
+            onlineUsers.push(user);
        }
     }
+    
+    vueUsers.users = onlineUsers;
    
 }
-
-
-
 
 function ChatUser(uid, username, frogvatarEyes, frogvatarMouth) {
     this.uid = uid;
@@ -119,29 +51,15 @@ function getUser(uid) {
 }
 
 
-
-var localUid = '{{user.id}}';
-var localFrogvatarMouth = '{{user.frogvatar_mouth}}';
-var localFrogvatarEyes = '{{user.frogvatar_eyes}}';
-var localUsername = '{{user.username}}';
-localFrogvatarMouth = parseInt(localFrogvatarMouth);
-localFrogvatarEyes = parseInt(localFrogvatarEyes);
-chatUsers.push(new ChatUser(localUid, localUsername, localFrogvatarEyes, localFrogvatarMouth));
-
-
 function sendMessage(msg) {
-
-    
-    
     if (msg) {
         socket.emit('chat_send', {'message':msg});
     }
-    
 }
 
 socket.on('chat_receive', function(data) {
     data = JSON.parse(data);
-    appendChatMessage(data.uid, data.message);
+    vueChat.messages.push(data);
 });
 
 
@@ -174,12 +92,42 @@ function handleInput(e) {
     }
 }
 
-document.getElementById("chat-textarea").addEventListener('keydown', e => {
-    handleInput(e);
-});
 
-document.getElementById("chat-button").addEventListener('mousedown', e => {
-    chatArea = document.getElementById('chat-textarea');
-    sendMessage(chatArea.value);
-    chatArea.value = '';
-});
+
+// Vue components
+
+var vueUsers = new Vue({
+    el: '#userbox',
+    data: {
+        users: [],
+        fetched: false,
+    },
+    computed: {
+        numUsers: function() {
+            return this.users.length
+        }
+    },
+    methods: {
+        getFrogvatarEyes: function(u) {
+             return '/resources/eyes-' + (u.frogvatarEyes + 1) + '.gif';
+            
+        },
+        getFrogvatarMouth: function(u) {
+             return '/resources/mouth-' + (u.frogvatarMouth + 1) + '.gif';
+        }
+    },
+})
+
+var vueChat = new Vue({
+    el: '#chat',
+    data: {
+        messages: [],
+        fetched: false,
+    },
+    methods: {
+        getUsername: function(uid) {
+             if (uid == 'ribbot') return uid;
+             return getUser(uid).username;  
+        },
+    },
+})
