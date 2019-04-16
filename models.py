@@ -31,7 +31,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
-
+db.create_all()
 
 class User(db.Model):
  
@@ -391,7 +391,7 @@ class PictionaryManager(db.Model):
                 elif c == '-':
                     blanked += " - "
                 else:
-                    blanked += "_  "
+                    blanked += "_ "
         return blanked
         
 class PictionaryUserTracker(db.Model):

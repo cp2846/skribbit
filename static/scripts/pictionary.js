@@ -1,3 +1,4 @@
+
 showTimer = function() {
      
         tf = document.getElementById("timer-foreground"); 
@@ -16,48 +17,47 @@ hideTimer = function() {
 
 };
 
+/*
+  TODO: Turn Timer into Vue component?
+*/
 function Timer() {
-
     this.currentSecondsLeft = 0;
     this.turnLength = 0;
-    
     this.updateTimer = function() {
-    
+        
         this.currentSecondsLeft--;
         
+        // update width of html timer element
         tf = document.getElementById("timer-foreground"); 
-
         timer_width = ((this.currentSecondsLeft + 1) / this.turnLength) * 200;
         tf.style.width = timer_width + "px"; 
         
-        
+        // only display the timer when the game isn't active
         if (this.currentSecondsLeft + 1 > 0 && !gameState.idle && gameState.started) {
             showTimer();
-           
         } else {
-
             hideTimer();
         }
     };
     
-    
-    this.setTimer = function(t1, t2) {
+    // used to update timer with specific values 
+    this.setTimer = function(secondsLeft, turnLength) {
         this.currentSecondsLeft = t1;
         this.turnLength = t2;
         if (!this.timerRunning) {
             this.timerRunning = true;
             this.updateTimer();
-        }
-        
+        }       
     };
-    
 }
 
- 
 
 timer = new Timer();
 hideTimer();
 
+/*
+  A function which refreshes the timer once per second
+*/
 function runTimer() {
     timer.updateTimer();
     setTimeout(runTimer, 1000);
@@ -65,9 +65,14 @@ function runTimer() {
 }
 runTimer();
 
+/*
+  Received an updated game state from the server,
+  update Pictionary board to reflect new values
+*/
 socket.on('game_state', function(data) {
-    gameState = JSON.parse(data);
-    
+
+    gameState = JSON.parse(data);    
+
     if (gameState.started && gameState.idle) {
         enterIdleState();
         if (gameState.current_idle_time_left > 0) {
@@ -81,16 +86,22 @@ socket.on('game_state', function(data) {
         document.getElementById("ready-button").style.display = 'block';
         setTimeout(pingServer, 20000);
     }
+
     for (var i = 0; i < gameState.udata.length; i++) {
         chatUser = getUser(gameState.udata[i].uid);
         if (chatUser) chatUser.ready = gameState.udata[i].ready;
         if (chatUser) chatUser.score = gameState.udata[i].score;
         if (chatUser) chatUser.guessed_this_round = gameState.udata[i].guessed_this_round;
     }
+
     showWord(gameState.word);
     showOnline();
 });
 
+/*
+  Received information from server about next turn,
+  clear the board and update the game state
+*/
 socket.on('next_turn', function(data) {
     console.log(data);
     data = JSON.parse(data);
@@ -105,19 +116,21 @@ socket.on('next_turn', function(data) {
     syncBrushValues();
 });
 
+/*
 socket.on('end_turn', function(data) {
     console.log(data);
 });
+*/
 
+// Server says to deactivate the canvas ("go idle")
 socket.on('idle', function(data) {
-    console.log(data);
-
     enterIdleState();
     setTimeout(pingServer, gameState.idle_length * 10);
 });
 
 gameState = {};
 
+// function for wiping the wiping the current artPad canvas and handing it to the active user
 function wipePad() {
     artPad.users = [];
     artPad.localAddUser(siteData.uid);
@@ -259,6 +272,7 @@ function unhideTools() {
 pingServer();
 socket.on('user_ready', function(data) {
     data = JSON.parse(data);
+    console.log(data);
     getUser(data.uid).ready = true;
     showOnline();
 });

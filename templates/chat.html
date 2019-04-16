@@ -17,7 +17,7 @@
                 <div class="userInfo">
                     {{ u.username }} <span v-show="u.score">( {{ u.score }} )</span>
                     <img v-show="u.statusReady" src="/resources/checkmark.gif" class="status-icon"/>
-                    <img v-show="u.statusDrawing" src="/resources/pencil.gif" class="status-icon"/>
+                    <img v-show="u.statusDrawing" src="/resources/crayon.gif" class="status-icon"/>
                 </div>
             </div>
                 
@@ -41,7 +41,7 @@
             <div id="messages">
                 {% raw %}
                 <!-- chat messages -->
-                <div v-for="m in messages" class="message">
+                <div v-for="m in messages.slice().reverse()" class="message">
   
                     <span class="username" v-show="m.uid != 'ribbot'">
                         {{ getUsername(m.uid) }}: 

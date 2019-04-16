@@ -39,9 +39,15 @@
 }
 .username {
     font-weight:bold;
+    color: #a05abd;
 }
 .userInfo {
     overflow-wrap:break-word;
     padding: 0.4em;
     position: relative;
+}
+.ink-button {
+    color: #fff;
+    border-color: transparent;
+    background-color: #a05abd;
 }

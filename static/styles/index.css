@@ -1,10 +1,9 @@
 .rooms {
-    border: 1px solid #ddd;
     overflow-y: scroll;
     overflow-wrap: break-word;
     border-radius: 6px;
     float: left;
-    margin: 5px;
+    margin: 9px;
     background-color: white;
     max-height:800px;
     text-align:left;
@@ -13,8 +12,7 @@
 }
 .room {
     margin:5px;
-    border: 1px solid #ddd;
-    display:flex;
+    text-align: center;
 
 }
 .room-title {

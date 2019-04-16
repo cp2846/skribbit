@@ -32,13 +32,15 @@
           <input type="range" min="1" max="100" value="100" class="slider" id="alphaSlider" onchange="updateAlpha()" onmousedown="usingControls()" onmouseup="notUsingControls()">
         </div>
         <div style="column-group">
-            <div class="all-33 medium-100 small-100 tiny-100">
+            <div class="all-50 medium-100 small-100 tiny-100">
                 <button class="all-100 ink-button black" onclick="artPad.localUndo()">Undo</button>
             </div>
-            <div class="all-33 medium-100 small-100 tiny-100">
+           <!-- DISABled for NOW UNTil i can get THAT DUMB Bug woRKED OUT
+	    <div class="all-33 medium-100 small-100 tiny-100">
                 <button class="all-100 ink-button black" onclick="artPad.localRedo()">Redo</button>
             </div>
-            <div class="all-33 medium-100 small-100 tiny-100">
+           -->
+            <div class="all-50 medium-100 small-100 tiny-100">
                 <button class="all-100 ink-button red" onclick="artPad.localReset()">Reset</button>
             </div>
         </div>
