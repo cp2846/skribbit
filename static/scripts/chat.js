@@ -54,7 +54,6 @@ function getUser(uid) {
     }
 }
 
-// send a message in chat
 function sendMessage(msg) {
     if (msg) {
         socket.emit('chat_send', {'message':msg});
@@ -62,7 +61,7 @@ function sendMessage(msg) {
 }
 
 
-// received a message from other chat users, update Vue component with new data.
+
 socket.on('chat_receive', function(data) {
     data = JSON.parse(data);
     vueChat.messages.push(data);
@@ -70,7 +69,6 @@ socket.on('chat_receive', function(data) {
 });
 
 
-// Handle newly joining members.
 socket.on('user_online', function(data) {
     data = JSON.parse(data);
     user = getUser(data.uid);
@@ -82,7 +80,7 @@ socket.on('user_online', function(data) {
     }
 });
 
-// Handle leaving members.
+
 socket.on('user_offline', function(data) {
     data = JSON.parse(data);
     user = getUser(data.uid);
@@ -90,7 +88,7 @@ socket.on('user_offline', function(data) {
     showOnline();
 });
 
-// handle messages from the server.
+
 socket.on('server_message', function(data) {
     data = JSON.parse(data);
     vueChat.messages.push(data);
@@ -110,12 +108,6 @@ function handleInput(e) {
 
 
 
-// Vue components
-
-/* 
-  Vue component for storing users and data associated with them,
-  with associated methods for rendering their goofy frog avatars
-*/
 var vueUsers = new Vue({
     el: '#userbox',
     data: {
@@ -139,7 +131,8 @@ var vueUsers = new Vue({
 })
 
 /* 
-  Vue component for rendering messages from users
+  Vue component for rendering chat --
+  includes messages from users
   and backend systems.
 */
 var vueChat = new Vue({

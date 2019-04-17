@@ -360,7 +360,6 @@ class PictionaryManager(db.Model):
     def choose_player(self):
         user_ids = set([u.id for u in self.room.get_active_users()])
         eligible_users = list(set([p.user for p in PictionaryUserTracker.query.filter(PictionaryUserTracker.user_id.in_(user_ids)).filter_by(pictionary_manager_id=self.id,drawn_this_round=False).all()]))
-        print(eligible_users)
         if eligible_users:
             sr = SystemRandom()
             return sr.choice(eligible_users)
@@ -382,7 +381,6 @@ class PictionaryManager(db.Model):
         db.session.delete(self)
         
     def blanked_word(self):
-        print(self.current_word)
         blanked = ""
         if self.current_word:
             for c in self.current_word.strip():

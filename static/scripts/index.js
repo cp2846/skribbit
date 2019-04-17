@@ -11,14 +11,14 @@ function pingServer() {
     }, 3200);
 }
 
-// Server sent us updated room info
+
 socket.on('rooms_info', function(data) {
     dataParsed = JSON.parse(data);
     vueRooms.rooms = dataParsed;
     vueRooms.fetched = true;
 });
 
-// ask the server for room data on page load
+
 getRoomsInfo();
 pingServer();
 
@@ -28,7 +28,7 @@ mouth = siteData.mouth;
 setEyes();
 setMouth();
 
-// Vue component for rendering room details
+
 var vueRooms = new Vue({
     el: '#rooms',
     data: {

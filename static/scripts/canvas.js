@@ -1,8 +1,8 @@
 
-// stores local inputs before they're sent to the server.
+// for storing local inputs before they're sent to the server
 var inputBuffer = [];
 
-// another user joined room; add them to our artPad instance
+// another user joined room
 socket.on('join', function(data) {
     room_id = siteData.room;    
     if (data) {
@@ -29,7 +29,7 @@ function notUsingControls() {
 
 
 /* 
-  load a pre-filled canvas based on JSON data
+  load a pre-filled canvas based on JSON canvas data
 */
 function prepareCanvas(data) {
     if (data) {
@@ -54,7 +54,6 @@ function prepareCanvas(data) {
 }
 
 
-// Received room input history from server, load it into canvas
 socket.on('room_history', function(data) {
     localUserId = siteData.uid;
     artPad.localAddUser(localUserId);
@@ -96,7 +95,6 @@ function pushInputs () {
 }
 
 
-// function for updating the brush size based on current slider value
 function updateSize() {
     var sizeSlider = document.getElementById('sizeSlider');
     artPad.localSetBrushSize(sizeSlider.value);
@@ -167,7 +165,7 @@ function syncBrushValues() {
     drawBrushSetting();
 }
 
-// ping server every 3.2 seconds to notify that this socket is still alive
+// send keep-alive packet to server every 3.2 seconds
 function socketAlive() {
      setTimeout(function() {
         socket.emit('socket_alive');

@@ -31,7 +31,6 @@ def authenticated_only(f):
     @wraps(f)
     def wrapped(*args, **kwargs):
         if not get_socket(request.sid):
-            print("user not allowed")
             return {"data:":"error: you are not authorized to make that action"}    
         else:
             return f(*args, **kwargs)
@@ -267,7 +266,6 @@ def input(data):
         return_data["uid"] = socket.user.id
         return_data["i"] = data["i"]
         socket.push_input(data["i"])
-        print(data["i"])
         emit('receive_input', flask_json.dumps(return_data), broadcast=True, include_self=False, room=socket.room.id) 
 
 
@@ -431,7 +429,6 @@ def next_turn(pr):
     else:
         pr.next_round()
         emit('next_round', broadcast=True, room=sock.room.id, include_self=True)
-        print(pr.round, pr.max_rounds)
         if pr.round > pr.max_rounds and pr.started:
             pr.prepare_end_game()
             emit('end_game', broadcast=True, room=sock.room.id, include_self=True)

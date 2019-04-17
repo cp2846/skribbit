@@ -1,15 +1,12 @@
 
 showTimer = function() {
-     
         tf = document.getElementById("timer-foreground"); 
         tb = document.getElementById("timer-background"); 
         tf.style.display = 'block';
         tb.style.display = 'block';
-    
 };
         
 hideTimer = function() {
- 
     tf = document.getElementById("timer-foreground"); 
     tb = document.getElementById("timer-background"); 
     tf.style.display = 'none';
@@ -42,8 +39,8 @@ function Timer() {
     
     // used to update timer with specific values 
     this.setTimer = function(secondsLeft, turnLength) {
-        this.currentSecondsLeft = t1;
-        this.turnLength = t2;
+        this.currentSecondsLeft = secondsLeft;
+        this.turnLength = turnLength;
         if (!this.timerRunning) {
             this.timerRunning = true;
             this.updateTimer();
@@ -71,7 +68,7 @@ runTimer();
 */
 socket.on('game_state', function(data) {
 
-    gameState = JSON.parse(data);    
+    gameState = JSON.parse(data);
 
     if (gameState.started && gameState.idle) {
         enterIdleState();
@@ -139,13 +136,6 @@ function wipePad() {
     }
 }
 
-function getPictionaryUser(uid) {
-
-}
-function PictionaryController() {
-    
-    
-}
 
 
 /*

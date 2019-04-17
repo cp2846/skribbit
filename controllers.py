@@ -73,15 +73,25 @@ def create_room_pictionary():
         room_turn_length = request.form['room_turn_length']
         room_max_rounds = request.form['room_max_rounds']
         room_wordlist = request.form['room_wordlist']
-        room_turn_length = int(room_turn_length)
-        room_max_rounds = int(room_max_rounds)
+
+        # catch invalid int input when attempting to cast
+        try:
+            room_turn_length = int(room_turn_length)
+            room_max_rounds = int(room_max_rounds)
+        except:
+             flash("Error: invalid numeric input")
+             return redirect(url_for('create_room_pictionary'))
+
         room_wordlist = list(set([w.strip() for w in room_wordlist.replace("\r\n", "\n").split("\n")]))
         room_wordlist = "\r\n".join([w for w in room_wordlist if not w == ''])
+
         if not room_name or not room_wordlist or not room_turn_length or not room_max_rounds:
             flash('Fields cannot be empty.', 'error')
             return redirect(url_for('create_room_pictionary'))
+
         new_room = user.create_pictionary_room(room_name,turn_length=room_turn_length*100,max_rounds=room_max_rounds,word_list=room_wordlist)
         return redirect(url_for('canvas', room_code=new_room.room.room_code))
+
     return render_template('create_room_pictionary.html', user=get_user())
             
 def create_room_normal():
