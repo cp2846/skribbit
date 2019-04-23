@@ -480,4 +480,5 @@ def prune():
 if __name__ == '__main__':
     models.db.create_all()
     prune()
-    socketio.run(app,host='0.0.0.0',port=5051)
+    #socketio.run(app,host='0.0.0.0',port=5051) #production
+    socketio.run(app,port=5050,debug=True)
