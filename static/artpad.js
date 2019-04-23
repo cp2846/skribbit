@@ -383,3 +383,4 @@ function ArtPad(container) {
     this.setBrushColor('#000');
 }
 
+

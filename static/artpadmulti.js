@@ -116,6 +116,7 @@ function MultiUserArtPad(container) {
     this.layers = []
     this.users = [];
     this.locked = false;
+   
     
    this.container.getCursorPosition = function(event) {
         var rect = this.getBoundingClientRect();
@@ -661,30 +662,42 @@ function MultiUserArtPad(container) {
         }
         
     };
-
+    
+    this.replayDepth = 0;
     this.userReplay = function(userID, startIndex) {
         
-        startIndex = 0;
-        user = this.fetchUser(userID);
+        /*
+        include a little failsafe to ensure that userReplay 
+        is not called as a result of itself, which could cause 
+        an infinite recursive loop
+        and cwash the web bwowser ;___;
+        */
+        this.replayDepth++;
+        if (this.replayDepth == 1) { 
+            startIndex = 0;
+            user = this.fetchUser(userID);
 
-        user.clearLayers();
+            user.clearLayers();
+           
+            for (var i = startIndex; i < user.inputSequence.length; i++) {
 
-        for (var i = startIndex; i < user.inputSequence.length; i++) {
+                // skip over the current input if it's been undone
+                var skipIndex = this.getUndoEndIndex(user.id, i);
+                if (skipIndex != -1) {
+                    i = skipIndex;
+                    continue;
+                } else {
+                    
+                    var input = user.inputSequence[i];
+                    if(input[0] != 6) {
+                        this.playInput(user.id, input);
+                    }
+                   
+                }  
 
-            // skip over the current input if it's been undone
-            var skipIndex = this.getUndoEndIndex(user.id, i);
-            if (skipIndex != -1) {
-                i = skipIndex;
-                continue;
-            } else {
-                
-                var input = user.inputSequence[i];
-                this.playInput(user.id, input);
-               
-            }  
-
+            }
         }
-        
+        this.replayDepth = 0;
 
     };
     
