@@ -7,11 +7,12 @@
     <script type="text/javascript" src="{{url_for('static', filename='scripts/socket-connect.js')}}"></script>
     <script>
           
-
-        socket.on('connect', function() {
-            room_code = '{{ room.room_code }}';
-            user_auth = '{{ user.auth_token }}';
-            socket.emit('join', {'room':room_code, 'auth_token':user_auth});
+        window.addEventListener('load', function() {
+            socket.on('connect', function() {
+                room_code = '{{ room.room_code }}';
+                user_auth = '{{ user.auth_token }}';
+                socket.emit('join', {'room':room_code, 'auth_token':user_auth});
+            });
         });
 
     </script>
@@ -29,7 +30,7 @@
     <!-- main canvas and tools section -->
     <div class="ink-grid">
       <div class="column-group" id="art-content">
-          <div class="all-80 small-100 tiny-100 noselect" id="canvas-wrapper">
+          <div class="all-80 small-100 tiny-100 noselect tall" id="canvas-wrapper">
               <div class="tall pane" id="canvas-container">
                     <div id="spinnerContainer" class="spinnerContainer">
                         <img class="spinner" id="spinner" src="{{url_for('static', filename='spinner.gif')}}" />
@@ -39,7 +40,7 @@
                     {% endif %}
               </div>
           </div>
-          <div class="all-20" id="toolbar-holder">
+          <div class="all-20 no-display-small" id="toolbar-holder">
             <div class="tall pane no-display-small">
                 {% include 'toolbar.html' %}
             </div>

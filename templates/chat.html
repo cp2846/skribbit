@@ -2,22 +2,23 @@
 
 <div class="ink-grid">
   <div class="column-group chat-holder">
-    <div class="all-20 medium-30 no-display-small no-display-tiny">
+    <div class="tall all-20 medium-30 no-display-small no-display-tiny">
       <div class="pane tall" id="userbox">
       {% raw %}
-      Online  {{ numUsers }} 
+      <span class="highlight" id="num-online">Online  {{ numUsers }}</span> 
         <!-- users list -->
-        <div class="column-group">
-            <div v-for="u in users" class="user pane all-100 cell">
-                <div class="frogvatar-chat">
-                    <img src="/resources/head.gif" class="frogvatar"/>
-                    <img :src="getFrogvatarEyes(u)" class="frogvatar"/>
-                    <img :src="getFrogvatarMouth(u)" class="frogvatar"/>
-                </div>
+        <div class="column-group" id="user-list">
+            <div v-for="u in users" class="user all-100 cell">
+                
                 <div class="userInfo">
-                    {{ u.username }} <span v-show="u.score">( {{ u.score }} )</span>
-                    <img v-show="u.statusReady" src="/resources/checkmark.gif" class="status-icon"/>
-                    <img v-show="u.statusDrawing" src="/resources/crayon.gif" class="status-icon"/>
+                    <span class="username">{{ u.username }}</span> 
+                    <span v-show="u.score" class="highlight">{{ u.score }}</span>
+                    
+                    <i v-show="u.statusReady" class="green fa fa-check" aria-hidden="true"></i>
+
+                    <i v-show="u.statusDrawing" class="fa fa-pencil" aria-hidden="true"></i>
+                    
+
                 </div>
             </div>
                 
@@ -26,7 +27,7 @@
       {% endraw %}
     </div>
     
-    <div class="all-80 medium-70 small-100 tiny-100">
+    <div class="tall all-80 medium-70 small-100 tiny-100">
       <div class="ink-form pane tall" id="chat">
             <div class="column-group">
                 
@@ -42,14 +43,12 @@
                 {% raw %}
                 <!-- chat messages -->
                 <div v-for="m in messages.slice().reverse()" class="message">
-  
                     <span class="username" v-show="m.uid != 'ribbot'">
                         {{ getUsername(m.uid) }}: 
                     </span>
                     <span class="chat-message-body">
                         {{ m.message }}
                     </span>
-                    
                 </div>
                 {% endraw %}
             </div>

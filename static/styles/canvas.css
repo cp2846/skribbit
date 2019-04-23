@@ -29,6 +29,9 @@
     position:absolute;
     width:100%;
 }
+#canvas-wrapper {
+
+}
 #canvas-container {
     overflow-y:hidden;
     overflow-x:scroll;
@@ -36,6 +39,10 @@
     position:relative;
 }
 #art-content {
-    
+    margin-bottom:10px;
     height:640px;
+}
+#toolbar-holder {
+    height:100%;
+
 }

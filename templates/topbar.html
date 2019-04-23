@@ -1,10 +1,12 @@
-<nav class="ink-navigation">
+<nav id="topbar" class="ink-navigation">
     <ul class="menu horizontal black">
-        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li><a href="{{ url_for('home') }}" title="Skribbit"><i class="fa fa-home" aria-hidden="true"></i></a></li>
          {% if user %}
-        <li><a>Create Room</a>
+        <li><a>
+                <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Create Room
+            </a>
             <ul class="submenu">
-                <li><a href="{{ url_for('create_room_normal') }}">Free-For-All</a></li>
+                <li><a href="{{ url_for('create_room_normal') }}">Normal</a></li>
                 <li>
                     <a href="{{ url_for('create_room_pictionary') }}">Pictionary</a>
                 </li>

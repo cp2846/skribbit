@@ -1,23 +1,10 @@
 
+
+
 // for storing local inputs before they're sent to the server
 var inputBuffer = [];
 
-// another user joined room
-socket.on('join', function(data) {
-    room_id = siteData.room;    
-    if (data) {
-        artPad.addUser(data.uid, artPad);
-        artPad.replay();
-    }
-});
 
-// another user did something; add their inputs to our local artPad instance
-socket.on('receive_input', function(data) {
-    data = JSON.parse(data);
-    if (data) {
-        executeAsync(artPad.receiveInputs(data.uid, data.i, true));
-    }    
-});
 
 artPad.using = false;
 function usingControls() {
@@ -54,14 +41,7 @@ function prepareCanvas(data) {
 }
 
 
-socket.on('room_history', function(data) {
-    localUserId = siteData.uid;
-    artPad.localAddUser(localUserId);
-    artPad.localUser.handleLocalInput = function(input) {
-        inputBuffer.push(input);
-    }
-    executeAsync(prepareCanvas(data));
-});
+
 
 /* 
 socket.on('user_offline', function(data) {
@@ -165,15 +145,52 @@ function syncBrushValues() {
     drawBrushSetting();
 }
 
-// send keep-alive packet to server every 3.2 seconds
-function socketAlive() {
-     setTimeout(function() {
-        socket.emit('socket_alive');
-        socketAlive();
-    }, 3200);
-}
-socketAlive();
+
+
 
 function executeAsync(func) {
     setTimeout(func, 0);
 }
+
+// wait until *after* window.onload before loading socket related functions
+window.addEventListener('load', function() {
+    
+    // send keep-alive packet to server every 3.2 seconds
+    function socketAlive() {
+        setTimeout(function() {
+            socket.emit('socket_alive');
+            socketAlive();
+        }, 3200);
+    }
+
+
+    // another user joined room
+    socket.on('join', function(data) {
+        room_id = siteData.room;    
+        if (data) {
+            artPad.addUser(data.uid, artPad);
+            artPad.replay();
+        }
+    });
+
+    socket.on('room_history', function(data) {
+        localUserId = siteData.uid;
+        artPad.localAddUser(localUserId);
+        artPad.localUser.handleLocalInput = function(input) {
+            inputBuffer.push(input);
+        }
+        executeAsync(prepareCanvas(data));
+    });
+
+    // another user did something; add their inputs to our local artPad instance
+    socket.on('receive_input', function(data) {
+        data = JSON.parse(data);
+        if (data) {
+            executeAsync(artPad.receiveInputs(data.uid, data.i, true));
+        }    
+    });
+
+    socketAlive();
+});
+
+

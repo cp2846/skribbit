@@ -1,3 +1,4 @@
+<!DOCTYPE HTML>
 <html>
 <head>
     <title>{% include 'sitetitle.html' %}</title>
@@ -6,6 +7,7 @@
     <script type="text/javascript" src="{{url_for('static', filename='scripts/ink/ink-all.js')}}"></script> <!-- inks js bundle -->
     <script type="text/javascript" src="{{url_for('static', filename='scripts/vue/vue.js')}}"></script> <!-- vue JS include -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{url_for('static', filename='fontawesome/css/font-awesome.min.css')}}">
     {% block includes %} {% endblock %}
 </head>
 <body>

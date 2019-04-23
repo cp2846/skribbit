@@ -31,18 +31,18 @@
         <div class="slidecontainer">
           <input type="range" min="1" max="100" value="100" class="slider" id="alphaSlider" onchange="updateAlpha()" onmousedown="usingControls()" onmouseup="notUsingControls()">
         </div>
-        <div style="column-group">
-            <div class="all-50 medium-100 small-100 tiny-100">
-                <button class="all-100 ink-button black" onclick="artPad.localUndo()">Undo</button>
-            </div>
-           <!-- DISABled for NOW UNTil i can get THAT DUMB Bug woRKED OUT
-	    <div class="all-33 medium-100 small-100 tiny-100">
-                <button class="all-100 ink-button black" onclick="artPad.localRedo()">Redo</button>
-            </div>
-           -->
-            <div class="all-50 medium-100 small-100 tiny-100">
-                <button class="all-100 ink-button red" onclick="artPad.localReset()">Reset</button>
-            </div>
+        <div class="column-group" style="text-align:center">
+            
+           
+                
+                     <i title="Undo" class="fa fa-undo fa-3x fa-button" aria-hidden="true" onclick="artPad.localUndo()"></i>
+               
+           
+          
+                     <i title="Reset" class="fa fa-times-circle fa-3x fa-button" aria-hidden="true" onclick="artPad.localReset()"></i>
+            
+	    
+           
         </div>
     </div>
 </div>

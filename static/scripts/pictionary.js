@@ -86,9 +86,11 @@ socket.on('game_state', function(data) {
 
     for (var i = 0; i < gameState.udata.length; i++) {
         chatUser = getUser(gameState.udata[i].uid);
-        if (chatUser) chatUser.ready = gameState.udata[i].ready;
-        if (chatUser) chatUser.score = gameState.udata[i].score;
-        if (chatUser) chatUser.guessed_this_round = gameState.udata[i].guessed_this_round;
+        if (chatUser) {
+            chatUser.ready = gameState.udata[i].ready;
+            chatUser.score = gameState.udata[i].score;
+            chatUser.guessed_this_round = gameState.udata[i].guessed_this_round;
+        }
     }
 
     showWord(gameState.word);

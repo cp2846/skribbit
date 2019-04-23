@@ -5,29 +5,36 @@
     width: 100%;
 }
 .frogvatar-chat {
-    height: 50px;
-    width: 50px;
+    height: 200px;
+    width: 200px;
     position: relative;
     margin: 0px auto;
     vertical-align:middle;
     float:left;
+    display:none;
 }
 .chat-holder {
     height: 320px;
 }
 .user {
-    line-height:50px;
-    height:55px;
     overflow:hidden;
+    border-left: 4px solid #ffbfff;
+    border-right: 1px solid transparent;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
 }
+.user:hover {
+    border-right: 1px solid #ffbfff;
+    border-top: 1px solid #ffbfff;
+    border-bottom: 1px solid #ffbfff;
+    border-radius: 0px 3px 3px 0px;
+}
+
 .canvas-holder {
 
     height:550px;
 }
-#userbox {
-    overflow-y: scroll;
-    overflow-x: hidden;
-}
+
 #messages {
     overflow-y: scroll;
     max-height:250px;
@@ -51,3 +58,18 @@
     border-color: transparent;
     background-color: #a05abd;
 }
+#user-list {
+    overflow-y: scroll;
+    scrollbar-width:none;
+    overflow-x: hidden;
+}
+#num-online {
+    text-align:center;
+    display:block;
+}
+
+.highlight {
+    color: #a05abd;
+    font-weight: bold;
+}
+

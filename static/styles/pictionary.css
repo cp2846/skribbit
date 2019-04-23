@@ -34,8 +34,8 @@
     opacity: 0.3;
     width: 200px;
     height: 20px;
-    top: 40;
-    right: 40;
+    top: 40px;
+    right: 40px;
     z-index:11;
 }
 #timer-foreground {
@@ -44,16 +44,16 @@
     opacity:0.8;
     width:200px;
     height:20px;
-    top: 40;
-    right: 40;
+    top: 40px;
+    right: 40px;
     z-index:12;
 }
 #word-display {
     position:absolute;
     color:#000;
     z-index:12;
-    top:40;
-    left:40;
+    top:40px;
+    left:40px;
     font-size:20px;
 }
 .user-guessed {

@@ -386,11 +386,9 @@ def disconnect():
         data = {}
         data["uid"] = user.id
         emit('user_offline', flask_json.dumps(data), room=room.id, broadcast=True)
-
     
 def get_socket(sid):
     return models.Socket.query.filter_by(sid=sid).first()
-    
 
 def get_room(room_code):
     return models.Room.query.filter_by(room_code=room_code).first()

@@ -3,14 +3,6 @@
     <script type="text/javascript" src="{{url_for('static', filename='socketio.min.js')}}"></script>
      <link href="{{url_for('static',filename='style.css')}}" rel="stylesheet">
      <script type="text/javascript" src="{{url_for('static', filename='scripts/socket-connect.js')}}"></script>
-     <script>
-        
-        socket.on('connect', function() {
-            user_auth = '{{ user.auth_token }}';
-            socket.emit('lobby_join', {'auth_token':user_auth});
-        });
-        siteData = {authToken: '{{ user.auth_token }}', eye: '{{ user.frogvatar_eyes }}', mouth: '{{ user.frogvatar_mouth }}'};
-    </script>
      <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
         
     <style>
@@ -19,6 +11,11 @@
             min-height:350px;
         }
     </style>
+
+    <script>
+        // this can't be included in index.js because it includes Jinja markup
+        siteData = {authToken: '{{ user.auth_token }}', eye: '{{ user.frogvatar_eyes }}', mouth: '{{ user.frogvatar_mouth }}'};
+    </script>
      
 
 
@@ -34,17 +31,19 @@
                 <div class="all-70 medium-100 small-100 tiny-100">
                     <div class="rooms" id="rooms">
                         
-                        <div v-show="rooms.length >= 1" class='room'>
-                            <div class='room-title'>Room Name</div>
-                            <div class='room-count'>Online </div>
+                        <div v-show="rooms.length >= 1" class="room column-group">
+                            <div class="all-50 room-title">Room Name</div>
+                            <div class="all-50 room-count">Online </div>
                         </div>
-                        <div v-show="!fetched" class='room'>
+                        <div v-show="!fetched" class="room">
                             Fetching rooms...
                         </div>
-                        <div v-for="room in rooms" class="room">
+                        <div v-for="room in rooms" class="room column-group player-room">
                             {% raw %}
-                            <div class="room-title"><a :href="roomLink(room)">{{ room.name }}</a></div>
-                            <div class="room-count">{{ room.user_count }} </div>
+                            <a :href="roomLink(room)">
+                                <div class="all-50 room-title">{{ room.name }}</div>
+                                <div class="all-50 room-count">{{ room.user_count }} </div>
+                            </a>
                             {% endraw %}
                         </div>
                         <div class='room' v-show="rooms.length == 0 && fetched">

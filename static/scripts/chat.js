@@ -7,14 +7,13 @@ var chatUsers = [];
 function showOnline() {
    onlineUsers = [];
    for (var i = 0; i < chatUsers.length; i++) {
-       user.statusReady = false;
-       user.statusGuessed = false;
-       user.statusDrawing = false;
        user = chatUsers[i];
        if (user.online) {   
            if (typeof gameState !== 'undefined') { 
                if (!gameState.started && user.ready) {
                     user.statusReady = true;
+               } else {
+                    user.statusReady = false;
                }
                if (user.guessed_this_round) {
                     user.statusGuessed = true;
@@ -39,13 +38,6 @@ function ChatUser(uid, username, frogvatarEyes, frogvatarMouth) {
     this.online = false;
 }
 
-// User info is sent from server, load it into RAM
-socket.on('user_info', function(data) {
-    data = JSON.parse(data);
-    if (!getUser(data.uid)) {
-        chatUsers.push(new ChatUser(data["uid"], data['username'], data['frogvatarEyes'], data['frogvatarMouth']));
-    }
-});
 
 // retreive a user by their uid
 function getUser(uid) {
@@ -54,45 +46,7 @@ function getUser(uid) {
     }
 }
 
-function sendMessage(msg) {
-    if (msg) {
-        socket.emit('chat_send', {'message':msg});
-    }
-}
-
-
-
-socket.on('chat_receive', function(data) {
-    data = JSON.parse(data);
-    vueChat.messages.push(data);
-    
-});
-
-
-socket.on('user_online', function(data) {
-    data = JSON.parse(data);
-    user = getUser(data.uid);
-    if (user) {
-        user.online = true;
-        showOnline();
-    } else {
-        console.log('no user for' + data.uid);
-    }
-});
-
-
-socket.on('user_offline', function(data) {
-    data = JSON.parse(data);
-    user = getUser(data.uid);
-    user.online = false;
-    showOnline();
-});
-
-
-socket.on('server_message', function(data) {
-    data = JSON.parse(data);
-    vueChat.messages.push(data);
-});                
+              
 
 /* 
    Hotfix for issue where hitting 'enter' in chat
@@ -149,4 +103,56 @@ var vueChat = new Vue({
     },
 })
 
+// wait until after window.onload to load socket-related functions
+window.addEventListener('load', function() {
+    
+   function sendMessage(msg) {
+        if (msg) {
+            socket.emit('chat_send', {'message':msg});
+        }
+    }
+
+
+
+    socket.on('chat_receive', function(data) {
+        data = JSON.parse(data);
+        vueChat.messages.push(data);
+        
+    });
+
+
+    socket.on('user_online', function(data) {
+        data = JSON.parse(data);
+        user = getUser(data.uid);
+        if (user) {
+            user.online = true;
+            showOnline();
+        } else {
+            console.log('no user for' + data.uid);
+        }
+    });
+
+
+    socket.on('user_offline', function(data) {
+        data = JSON.parse(data);
+        user = getUser(data.uid);
+        user.online = false;
+        showOnline();
+    });
+
+
+    socket.on('server_message', function(data) {
+        data = JSON.parse(data);
+        vueChat.messages.push(data);
+    });  
+
+    // User info is sent from server, load it into RAM
+    socket.on('user_info', function(data) {
+        data = JSON.parse(data);
+        if (!getUser(data.uid)) {
+            chatUsers.push(new ChatUser(data["uid"], data['username'], data['frogvatarEyes'], data['frogvatarMouth']));
+        }
+    });
+
+});
 

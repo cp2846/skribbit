@@ -4,7 +4,7 @@ a {
 
 .ink-navigation ul.menu.black li a {
     color: #a05abd;
-    line-height: 3;
+
 }
 
 .pane {
@@ -31,7 +31,7 @@ a {
 }
 @media only screen and (max-width: 640px) {
     .no-display-small {
-        display:none;
+        display:none !important;
     }
     
 
@@ -74,6 +74,7 @@ a {
 body {
     background-color: #eaeaea;
     overflow-x: hidden;
+    padding-top:50px;
 }
 
 /*scrollbar settings*/
@@ -144,7 +145,7 @@ body {
     padding: 0.2em;
 }
 canvas {
-  position:absolute;
+    position:absolute;
 }
 
 .noselect {
@@ -157,7 +158,29 @@ canvas {
 .centered-text {
     text-align:center;
 }
+
 .status-icon {
     max-width:30px;
     display:inline-block;
+}
+
+.green {
+    color: #27c83f;
+}
+.pane {
+    margin: 0.2em;
+}
+#topbar {
+    position: fixed;
+    z-index:100;
+    width: 100%;
+    top:0;
+}
+
+.fa-button {
+    cursor:pointer;
+}
+
+.fa-button:hover {
+    color:#a05abd;
 }

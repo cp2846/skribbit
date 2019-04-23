@@ -1,33 +1,50 @@
 .rooms {
-    overflow-y: scroll;
     overflow-wrap: break-word;
     border-radius: 6px;
     float: left;
     margin: 9px;
     background-color: white;
-    max-height:800px;
     text-align:left;
     width:100%;
     
 }
+
+.player-room {
+  border: 1px solid transparent;
+  border-left-color:#ffbfff;
+  border-left-width: 4px;
+  padding: 0px 10px;
+}
+
+.player-room a:hover {
+  
+  color:#a05abd;
+}
+.player-room:hover {
+    border-color: #ffbfff;
+    color: #ffbfff !important;
+}
+
 .room {
     margin:5px;
     text-align: center;
-
+    line-height: 2.5;
+    
 }
+
+.room a {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+
 .room-title {
-    padding:5px;
-    width:70%;
-    float:left;
-    margin:auto;
+    text-align: left;
 }
 .room-count {
-    padding:5px;
-    width:28%;
-    margin:auto;
-    float:right;
+   
     color:#bbb;
-    text-align:center;
+    text-align: center;
 }
 .sidebar {
     float:left;

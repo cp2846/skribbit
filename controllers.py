@@ -13,11 +13,9 @@ from sqlalchemy import func
 import json
 
 def make_user():
-
     errors = []
-    
     if request.method == 'POST':
-        username = request.form['username']
+        username = request.form['username'].strip()
         frogvatar_eyes = request.form['eyes-setting']
         frogvatar_mouth = request.form['mouth-setting']
         existing_user = User.query.filter(func.lower(User.username) == func.lower(username)).first()
@@ -61,14 +59,13 @@ def make_user():
 
 
 
-def create_room():
-    return render_template('create_room.html', user=get_user())
+
             
             
 def create_room_pictionary():
     if request.method == 'POST':
         user = get_user()
-        room_name = request.form['room_name']
+        room_name = request.form['room_name'].strip()
         room_name = room_name[0:min(100, len(room_name))]
         room_turn_length = request.form['room_turn_length']
         room_max_rounds = request.form['room_max_rounds']
@@ -97,7 +94,7 @@ def create_room_pictionary():
 def create_room_normal():
     if request.method == 'POST':
         user = get_user()
-        room_name = request.form['room_name']
+        room_name = request.form['room_name'].strip()
         room_name = room_name[0:min(100, len(room_name))]
         if not room_name:
             flash('Fields cannot be empty.', 'error')

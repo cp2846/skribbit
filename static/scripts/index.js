@@ -1,3 +1,22 @@
+
+
+// load socket-related functions *after* window.onload
+window.addEventListener('load', function() {
+    socket.on('connect', function() {
+        user_auth = '{{ user.auth_token }}';
+        socket.emit('lobby_join', {'auth_token':user_auth});
+    });
+    
+    getRoomsInfo();
+    pingServer();
+
+    socket.on('rooms_info', function(data) {
+        dataParsed = JSON.parse(data);
+        vueRooms.rooms = dataParsed;
+        vueRooms.fetched = true;
+    });
+});
+
 function getRoomsInfo() {
     user_auth = siteData.authToken;
     socket.emit('get_rooms_info', {'auth_token':user_auth});
@@ -12,15 +31,6 @@ function pingServer() {
 }
 
 
-socket.on('rooms_info', function(data) {
-    dataParsed = JSON.parse(data);
-    vueRooms.rooms = dataParsed;
-    vueRooms.fetched = true;
-});
-
-
-getRoomsInfo();
-pingServer();
 
 // for displaying the user's silly frog avatar
 eye = siteData.eye;
