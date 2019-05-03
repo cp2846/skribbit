@@ -20,12 +20,17 @@ a {
     height:100%;
 }
 
-
-
+.only-display-small {
+    display: none;
+}
+.no-display {
+    display: none !important;
+}
 @media only screen and (max-width: 960px) {
     .no-display-medium {
         display:none;
     }
+
     
 
 }
@@ -33,8 +38,12 @@ a {
     .no-display-small {
         display:none !important;
     }
-    
-
+    .ink-grid {
+        padding: 5px;
+    }
+    .only-display-small {
+        display: block;
+    }
 }
 @media only screen and (max-width: 320px) {
     .no-display-tiny  {

@@ -120,37 +120,31 @@ function MultiUserArtPad(container) {
     
    this.container.getCursorPosition = function(event) {
         var rect = this.getBoundingClientRect();
-        var x = Math.round(event.clientX - rect.left);
-        var y = Math.round(event.clientY - rect.top);
+        if (event.type == "touchmove" || event.type == "touchstart") {
+            var x = Math.round(event.targetTouches[0].clientX - rect.left);
+            var y = Math.round(event.targetTouches[0].clientY - rect.top);
+        } else {
+            var x = Math.round(event.clientX - rect.left);
+            var y = Math.round(event.clientY - rect.top);
+        }
         return {x:x, y:y};
     }
     
     this.container.onmousedown = function(e){
         
-        if (this.artpad.localUser && this.artpad.localUser.painting !== true && this.artpad.locked === false) {
-            this.artpad.localUser.painting = true;
-            this.artpad.localUser.inputSequence.push([4, true]);
-            this.artpad.localUser.handleLocalInput([4, true]);
-            if (this.artpad.localUser.undoCount > 0) {
-                this.artpad.deleteUndos(this.artpad.localUser.id);
-            }
-             this.artpad.paint(this.artpad.localUser.id, this.oldMouseX, this.oldMouseY, this.mouseX, this.mouseY);
-            this.artpad.localUser.inputSequence.push([1, this.oldMouseX, this.oldMouseY, this.mouseX, this.mouseY]);
-            this.artpad.localUser.handleLocalInput([1, this.oldMouseX, this.oldMouseY, this.mouseX, this.mouseY]);
-            document.body.classList.add("unselectable");
-            
-        }
+        this.mouseDownHandler(e);
     };
-    this.container.onmouseup = function(e){
-        if (this.artpad.localUser && this.artpad.localUser.painting === true && this.artpad.locked === false) {
-            
-            this.artpad.localUser.painting = false;
-            this.artpad.localUser.inputSequence.push([4, false]);
-            this.artpad.localUser.handleLocalInput([4, false]);
-            document.body.classList.remove("unselectable");
-        }
+    this.container.ontouchstart = function(e){
+        this.mouseDownHandler(e);
     };
-    this.container.onmouseout = function(e) {
+
+    this.container.onmouseup = function(){
+        this.mouseUpHandler();
+    };
+    this.container.ontouchend = function(){
+        this.mouseUpHandler();
+    };
+    this.container.onmouseout = function() {
         
         //if (this.artpad.localUser.painting === true) {
             
@@ -162,35 +156,20 @@ function MultiUserArtPad(container) {
 
     
     this.container.onmousemove = function(e) {
-        var coords = this.artpad.container.getCursorPosition(e);
-        this.mouseX = coords.x;
-        this.mouseY = coords.y;
-        if (this.artpad.localUser && this.artpad.localUser.painting && this.artpad.locked === false) {
-            this.artpad.paint(this.artpad.localUser.id, this.oldMouseX, this.oldMouseY, this.mouseX, this.mouseY);
-            this.artpad.localUser.inputSequence.push([1, this.oldMouseX, this.oldMouseY, this.mouseX, this.mouseY]);
-            this.artpad.localUser.handleLocalInput([1, this.oldMouseX, this.oldMouseY, this.mouseX, this.mouseY]);
-            
-        }
-        
-        this.oldMouseX = this.mouseX;
-        this.oldMouseY = this.mouseY;
+       this.mouseMoveHandler(e);
 
     };
     
-    this.canvas.onmousedown = function(e){
-        
-    };
-    this.canvas.onmouseup = function(e){
+    this.container.ontouchmove = function(e) {
        
-    };
-    this.canvas.onmouseout = function(e) {
-        
-    }
-    
-    this.canvas.onmousemove = function(e) {
-        //
+       this.mouseMoveHandler(e);
 
     };
+
+    // disable right click on canvas
+    this.container.oncontextmenu = function(e) {
+       e.preventDefault();
+    }
     
     this.addUser = function(userID, artpad) {
 
@@ -746,6 +725,46 @@ function MultiUserArtPad(container) {
             }
         }
     };
+    this.container.mouseDownHandler = function(e) {
+        var coords = this.getCursorPosition(e);
+        this.oldMouseX = coords.x;
+        this.oldMouseY = coords.y;
+        if (this.artpad.localUser && this.artpad.localUser.painting !== true && this.artpad.locked === false) {
+            this.artpad.localUser.painting = true;
+            this.artpad.localUser.inputSequence.push([4, true]);
+            this.artpad.localUser.handleLocalInput([4, true]);
+            if (this.artpad.localUser.undoCount > 0) {
+                this.artpad.deleteUndos(this.artpad.localUser.id);
+            }
+            
+            document.body.classList.add("unselectable");
+                
+        }
+    };
+    this.container.mouseMoveHandler = function(e) {
+        var coords = this.getCursorPosition(e);
+        this.mouseX = coords.x;
+        this.mouseY = coords.y;
+        if (this.artpad.localUser && this.artpad.localUser.painting && this.artpad.locked === false) {
+            this.artpad.paint(this.artpad.localUser.id, this.oldMouseX, this.oldMouseY, this.mouseX, this.mouseY);
+            this.artpad.localUser.inputSequence.push([1, this.oldMouseX, this.oldMouseY, this.mouseX, this.mouseY]);
+            this.artpad.localUser.handleLocalInput([1, this.oldMouseX, this.oldMouseY, this.mouseX, this.mouseY]);
+            
+        }
+        
+        this.oldMouseX = this.mouseX;
+        this.oldMouseY = this.mouseY;
+    };
+    this.container.mouseUpHandler = function() {
+        if (this.artpad.localUser && this.artpad.localUser.painting === true && this.artpad.locked === false) {
+            
+            this.artpad.localUser.painting = false;
+            this.artpad.localUser.inputSequence.push([4, false]);
+            this.artpad.localUser.handleLocalInput([4, false]);
+            document.body.classList.remove("unselectable");
+        }
+    };
+
    
 
 }
@@ -828,11 +847,13 @@ function ArtPadUser(userID, artpad) {
         this.resetReferences();
         this.addLayer();
     };
+
+    
     this.createLayerStack();
+    
     
 
 }
-
 
 
 

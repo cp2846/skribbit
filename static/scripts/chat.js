@@ -48,17 +48,6 @@ function getUser(uid) {
 
               
 
-/* 
-   Hotfix for issue where hitting 'enter' in chat
-   input window leads to undesired behavior
-*/
-function handleInput(e) {
-    if ('Enter' == e.key) {
-        e.preventDefault();
-        sendMessage(e.currentTarget.value.trim());
-        e.currentTarget.value = '';
-    }
-}
 
 
 
@@ -103,16 +92,29 @@ var vueChat = new Vue({
     },
 })
 
+
+
+function sendMessage(msg) {
+    if (msg && socket) {
+        socket.emit('chat_send', {'message':msg});
+    }
+}
+
+/* 
+fix for issue where hitting 'enter' in chat
+input window leads to undesired behavior
+*/
+function handleInput(e) {
+    if ('Enter' == e.key) {
+        e.preventDefault();
+        sendMessage(e.currentTarget.value.trim());
+        e.currentTarget.value = '';
+    }
+}
+
+
 // wait until after window.onload to load socket-related functions
 window.addEventListener('load', function() {
-    
-   function sendMessage(msg) {
-        if (msg) {
-            socket.emit('chat_send', {'message':msg});
-        }
-    }
-
-
 
     socket.on('chat_receive', function(data) {
         data = JSON.parse(data);

@@ -42,33 +42,31 @@
     }
     .click-me {
         cursor:pointer;
+        height: 300px;
+        margin-left: auto;
+        margin-right: auto;
+        float:none;
     }
 
 </style>   
-    <div class="pane register-form all-50 medium-70 small-95 tiny-95" style="text-align:center">
+    <div class="pane register-form all-30 medium-70 small-95 tiny-95" style="text-align:center">
        
        <div class="wrapper">
             <div class="column-group">
-                <div class="arrow-container all-10 left">
-                    <img src="{{url_for('static',filename='arrow-left.gif')}}" class="top-arrow" onclick="prevEyes()"/>
-                    <img src="{{url_for('static',filename='arrow-left.gif')}}" class="bottom-arrow" onclick="prevMouth()"/>
-                </div>
-               <div class="all-80 click-me" id="click-me">
+
+               <div class="all-100 click-me" id="click-me">
         
                     {% include 'frogvatar-container.html' %}
                </div>
                
-                <div class="arrow-container all-10 right">
-                    <img src="{{url_for('static',filename='arrow-right.gif')}}" class="top-arrow" onclick="nextEyes()"/>
-                    <img src="{{url_for('static',filename='arrow-right.gif')}}" class="bottom-arrow" onclick="nextMouth()"/>
-                </div>
+
             </div>
            <form class="centered-text ink-form" action="{{url_for('register')}}" method="post">
                <div class="control-group">
-               <input type="text" class="all-50 centered" placeholder="username" name="username"></div>
+               <input type="text" class="all-100 centered" placeholder="username" name="username"></div>
                <input type="hidden" id="eyes-setting"  name="eyes-setting" value=""/>
                <input type="hidden" id="mouth-setting" name="mouth-setting" value="" />
-               <button class="ink-button all-50 button-form centered" type="submit">Register!</button><br><br>
+               <button class="ink-button all-100 button-form centered" type="submit" style="margin:0px">Register!</button><br><br>
            </form>
         </div>      
     </div>

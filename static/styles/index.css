@@ -8,6 +8,9 @@
     width:100%;
     
 }
+.no-display {
+    display: none !important;
+}
 
 .player-room {
   border: 1px solid transparent;
@@ -53,8 +56,6 @@
 }
 .room-wrapper {
     width:95%;
-    
-    margin: auto;
 }
 .page-wrapper {
     text-align:center;

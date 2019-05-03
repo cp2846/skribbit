@@ -58,14 +58,16 @@
 </div>
 <script type="text/javascript" src="{{ url_for('static', filename='scripts/chat.js')}}"></script>
 <script>
-    document.getElementById("chat-textarea").addEventListener('keydown', e => {
-        handleInput(e);
-    });
+    window.addEventListener('load', function() {
+        document.getElementById("chat-textarea").addEventListener('keydown', e => {
+            handleInput(e);
+        });
 
-    document.getElementById("chat-button").addEventListener('mousedown', e => {
-        chatArea = document.getElementById('chat-textarea');
-        sendMessage(chatArea.value.trim());
-        chatArea.value = '';
+        document.getElementById("chat-button").addEventListener('mousedown', e => {
+            chatArea = document.getElementById('chat-textarea');
+            sendMessage(chatArea.value.trim());
+            chatArea.value = '';
+        });
     });
 
 </script>

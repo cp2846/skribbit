@@ -62,70 +62,6 @@ function runTimer() {
 }
 runTimer();
 
-/*
-  Received an updated game state from the server,
-  update Pictionary board to reflect new values
-*/
-socket.on('game_state', function(data) {
-
-    gameState = JSON.parse(data);
-
-    if (gameState.started && gameState.idle) {
-        enterIdleState();
-        if (gameState.current_idle_time_left > 0) {
-            setTimeout(pingServer, gameState.current_idle_time_left * 1000);
-        }
-    } else if (gameState.started) {
-        console.log("fff");
-        nextTurn(gameState.current_turn_time_left * 1000);
-    } else {
-        enterIdleState();
-        document.getElementById("ready-button").style.display = 'block';
-        setTimeout(pingServer, 20000);
-    }
-
-    for (var i = 0; i < gameState.udata.length; i++) {
-        chatUser = getUser(gameState.udata[i].uid);
-        if (chatUser) {
-            chatUser.ready = gameState.udata[i].ready;
-            chatUser.score = gameState.udata[i].score;
-            chatUser.guessed_this_round = gameState.udata[i].guessed_this_round;
-        }
-    }
-
-    showWord(gameState.word);
-    showOnline();
-});
-
-/*
-  Received information from server about next turn,
-  clear the board and update the game state
-*/
-socket.on('next_turn', function(data) {
-    console.log(data);
-    data = JSON.parse(data);
-    wipePad();  
-    gameState.word = data.word;
-    if (gameState.word) {
-        showWord(gameState.word);
-    }
-    updateColor(artPad.localUser.brushColor);
-    updateSize();
-    updateAlpha();
-    syncBrushValues();
-});
-
-/*
-socket.on('end_turn', function(data) {
-    console.log(data);
-});
-*/
-
-// Server says to deactivate the canvas ("go idle")
-socket.on('idle', function(data) {
-    enterIdleState();
-    setTimeout(pingServer, gameState.idle_length * 10);
-});
 
 gameState = {};
 
@@ -196,13 +132,18 @@ function enterIdleState() {
     if (gameState.started) {
         document.getElementById("ready-button").style.display = 'none';
     }
+    if (gameState && !(gameState.started)) wipePad();
+    
     unhideChatInput();
     showOnline();
 }
 
 function leaveIdleState() {
+    if (gameState.idle) {
+        wipePad(); 
+    }
     document.getElementById("idle-message-container").style.display = 'none';
-    
+    gameState.idle = false;
 }
 
 function updateGame() {
@@ -232,7 +173,6 @@ function currentlyDrawingUser() {
 
 
 function pingServer() {
-    console.log("pinging...");
     socket.emit('next_state');
 }
 
@@ -252,6 +192,7 @@ function hideTools() {
     document.getElementById("canvas-wrapper").classList.add("all-100");
     document.getElementById("toolbar-holder").classList.add("all-0");
     document.getElementById("toolbar-holder").classList.remove("all-20");
+    document.getElementById("toolbar-mobile").classList.add("no-display");
 }
 function unhideTools() {
     document.getElementById("toolbar-holder").style.display = 'block';
@@ -259,15 +200,10 @@ function unhideTools() {
     document.getElementById("canvas-wrapper").classList.add("all-80");
     document.getElementById("toolbar-holder").classList.remove("all-0");
     document.getElementById("toolbar-holder").classList.add("all-20");
+    document.getElementById("toolbar-mobile").classList.remove("no-display");
 }
 
-pingServer();
-socket.on('user_ready', function(data) {
-    data = JSON.parse(data);
-    console.log(data);
-    getUser(data.uid).ready = true;
-    showOnline();
-});
+
 
 
 
@@ -287,4 +223,79 @@ function unhideChatInput() {
     document.getElementById("chat-input").style.display= "block" ;
 }
 
-askUpdates();
+window.addEventListener('load', function() {
+    /*
+      Received an updated game state from the server,
+      update Pictionary board to reflect new values
+    */
+    socket.on('game_state', function(data) {
+
+        gameState = JSON.parse(data);
+
+        if (gameState.started && gameState.idle) {
+            enterIdleState();
+            if (gameState.current_idle_time_left > 0) {
+                setTimeout(pingServer, gameState.current_idle_time_left * 1000);
+            }
+        } else if (gameState.started) {
+            nextTurn(gameState.current_turn_time_left * 1000);
+        } else {
+            enterIdleState();
+            document.getElementById("ready-button").style.display = 'block';
+            setTimeout(pingServer, 20000);
+        }
+
+        for (var i = 0; i < gameState.udata.length; i++) {
+            chatUser = getUser(gameState.udata[i].uid);
+            if (chatUser) {
+                chatUser.ready = gameState.udata[i].ready;
+                chatUser.score = gameState.udata[i].score;
+                chatUser.guessed_this_round = gameState.udata[i].guessed_this_round;
+            }
+        }
+
+        showWord(gameState.word);
+        showOnline();
+    });
+
+    /*
+      Received information from server about next turn,
+      clear the board and update the game state
+    */
+    socket.on('next_turn', function(data) {
+        console.log(data);
+        data = JSON.parse(data);
+        wipePad();  
+        gameState.word = data.word;
+        if (gameState.word) {
+            showWord(gameState.word);
+        }
+        updateColor(artPad.localUser.brushColor);
+        updateSize();
+        updateAlpha();
+        syncBrushValues();
+    });
+
+    /*
+    socket.on('end_turn', function(data) {
+        console.log(data);
+    });
+    */
+
+    // Server says to deactivate the canvas ("go idle")
+    socket.on('idle', function(data) {
+        enterIdleState();
+        setTimeout(pingServer, gameState.idle_length * 10);
+    });
+    pingServer();
+    askUpdates();
+    socket.on('user_ready', function(data) {
+        data = JSON.parse(data);
+        console.log(data);
+        getUser(data.uid).ready = true;
+        showOnline();
+    });
+
+});
+
+

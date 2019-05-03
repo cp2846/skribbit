@@ -42,6 +42,23 @@
     margin-bottom:10px;
     height:640px;
 }
+
+
+#toolbar-mobile {
+
+    
+}
+.color-mobile {
+   width: 10%;
+   height:37px;
+   display: inline-block;
+}
+
+@media only screen and (max-width: 640px) {
+    #art-content {
+        height:420px;    
+    }
+}
 #toolbar-holder {
     height:100%;
 
