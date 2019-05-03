@@ -121,7 +121,7 @@ def record_activity(f):
         sock.record_activity()
         sock.room.record_activity()
         sock.user.record_activity()
-        prune()
+        prune() 
         return f(*args, **kwargs)
     return wrapped    
 
@@ -210,6 +210,7 @@ def handle_join(json):
             uinfo["uid"] = u.id
             emit('user_online', flask_json.dumps(uinfo), room=request.sid, include_self=True)
         room.record_activity()
+        models.db.session.commit()
             
 @socketio.on('next_state')            
 @authenticated_only
@@ -226,6 +227,7 @@ def next_state():
             pr.go_idle()
             emit('idle', room=sock.room.id, broadcast=True, include_self=True) # have an intermediate idle period between important states
             emit('server_message', flask_json.dumps({'message':'Time\'s up! The word was: ' + pr.current_word}), broadcast=True, room=sock.room.id, include_self=True)
+        models.db.session.commit()
             
 @socketio.on('start_game')
 @authenticated_only
@@ -266,8 +268,9 @@ def input(data):
         return_data["uid"] = socket.user.id
         return_data["i"] = data["i"]
         socket.push_input(data["i"])
+        models.db.session.commit()
         emit('receive_input', flask_json.dumps(return_data), broadcast=True, include_self=False, room=socket.room.id) 
-
+    
 
     
 @socketio.on('chat_send')  
@@ -298,8 +301,7 @@ def chat_send(data):
                     emit('chat_receive', flask_json.dumps(return_data), broadcast=True, include_self=True, room=socket.room.id)
         else:
             emit('chat_receive', flask_json.dumps(return_data), broadcast=True, include_self=True, room=socket.room.id)
-    
-    
+
 @socketio.on('ready')  
 @authenticated_only
 @record_activity
@@ -315,7 +317,8 @@ def ready():
     if not pr.started and pr.majority_ready():
         pictionary_start_game()
       
-    
+    models.db.session.commit()
+
 @app.route('/register', methods=['GET', 'POST'])
 @clear_session
 def register():
@@ -386,7 +389,8 @@ def disconnect():
         data = {}
         data["uid"] = user.id
         emit('user_offline', flask_json.dumps(data), room=room.id, broadcast=True)
-    
+    models.db.session.commit()
+
 def get_socket(sid):
     return models.Socket.query.filter_by(sid=sid).first()
 
@@ -430,7 +434,7 @@ def next_turn(pr):
         if pr.round > pr.max_rounds and pr.started:
             pr.prepare_end_game()
             emit('end_game', broadcast=True, room=sock.room.id, include_self=True)
-    
+    models.db.session.commit()
     notify_game_state(pr)
             
 def pictionary_start_game():
@@ -439,8 +443,10 @@ def pictionary_start_game():
     if not pr.started:
         pr.prepare_start_game()
         pr.next_round()
-        emit('next_round', broadcast=True, room=sock.room.id, include_self=True)
         next_turn(pr)
+        models.db.session.commit()
+        emit('next_round', broadcast=True, room=sock.room.id, include_self=True)
+        
         
 def notify_game_state(pictionary_room):
     game_state = pictionary_room.get_game_state()
@@ -473,7 +479,7 @@ def prune():
        r.destroy()
     deadline = datetime.utcnow() - timedelta(seconds=3000)
     models.User.query.filter(models.User.last_active_time <= deadline).filter_by(is_admin=False).delete()
-
+    models.db.session.commit()
 		
 if __name__ == '__main__':
     models.db.create_all()
