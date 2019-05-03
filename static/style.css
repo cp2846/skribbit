@@ -52,20 +52,20 @@ a {
 }
 
 .button-form {
-    color: fff;
+    color: #fff;
     border: none;
     background-color: #a05abd;
     padding: 15px;
 }
 
 .button-form:hover {
-    color: fff;
+    color: #fff;
     border: none;
     background-color: #a05abd;
 }
 
 .button-form:active {
-    color: fff;
+    color: #fff;
     border: none;
     background-color: #a05abd;
 }

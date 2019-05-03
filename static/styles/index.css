@@ -1,6 +1,5 @@
 .rooms {
     overflow-wrap: break-word;
-    border-radius: 6px;
     float: left;
     margin: 9px;
     background-color: white;
@@ -59,4 +58,5 @@
 }
 .page-wrapper {
     text-align:center;
+    padding-left: 10px;
 }
