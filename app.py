@@ -478,5 +478,11 @@ def prune():
 if __name__ == '__main__':
     models.db.create_all()
     prune()
-    #socketio.run(app,host='0.0.0.0',port=5051) #production
-    socketio.run(app,port=5050,debug=True)
+
+    # deploy development/production mode depending on command line args
+    import sys
+    if len(sys.argv) > 1 and sys.argv[1] == "--debug":
+        socketio.run(app,port=5050,debug=True)
+    else:
+        socketio.run(app,host='0.0.0.0',port=5050) #production
+    
