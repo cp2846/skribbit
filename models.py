@@ -87,12 +87,12 @@ class User(db.Model):
             self.sockets.append(socket)
             room = Room.query.filter_by(id=rid).first()
             room.add_socket(socket)
-            db.session.flush()
+            db.session.commit()
             return socket
         
     def set_auth_token(self):
         self.auth_token = generate_random_string(35)
-        db.session.flush()
+        db.session.commit()
         return self.auth_token
     
     def check_auth_token(self, token):
@@ -101,12 +101,12 @@ class User(db.Model):
     def create_pictionary_room(self, name, turn_length=6000, max_rounds=3, word_list=[], persistent=False):
         new_pictionary_room = PictionaryManager(name, self.id, turn_length, max_rounds, word_list)
         db.session.add(new_pictionary_room)
-        db.session.flush()
+        db.session.commit()
         return new_pictionary_room
     
     def record_activity(self):
         self.last_active_time = datetime.utcnow()
-        db.session.flush()
+        db.session.commit()
         
         
 class Room(db.Model):
@@ -163,7 +163,7 @@ class Room(db.Model):
     def add_socket(self, socket):
         socket.room_id = self.id
         self.active_sockets.append(socket)
-        db.session.flush()
+        db.session.commit()
 
         
     def get_all_users(self):
@@ -177,11 +177,11 @@ class Room(db.Model):
         if self.pictionary_manager:
             self.pictionary_manager.destroy()
         
-        db.session.flush()
+        db.session.commit()
         
     def record_activity(self):
         self.last_active_time = datetime.utcnow()
-        db.session.flush()
+        db.session.commit()
 
     def get_active_user_count(self):
         return len(self.get_active_users())
@@ -229,7 +229,7 @@ class PictionaryManager(db.Model):
         self.round = 0
         self.wipe()
         
-        db.session.flush()
+        db.session.commit()
         
     def give_next_turn(self, player):
         trackers = PictionaryUserTracker.query.filter_by(pictionary_manager_id=self.id).all()
@@ -247,7 +247,7 @@ class PictionaryManager(db.Model):
         player_tracker.drawn_this_round = True
         self.idle = False
         self.current_turn_start_time = datetime.utcnow()
-        db.session.flush()
+        db.session.commit()
         
     def next_round(self):
         for t in PictionaryUserTracker.query.filter_by(pictionary_manager_id=self.id):
@@ -255,7 +255,7 @@ class PictionaryManager(db.Model):
             t.drawn_this_round = False
             t.guessed_this_round = False
         self.round += 1
-        db.session.flush()
+        db.session.commit()
 
     def prepare_end_game(self):
         tracker = PictionaryUserTracker.query.filter_by(pictionary_manager_id=self.id,drawing=True).first()
@@ -265,12 +265,12 @@ class PictionaryManager(db.Model):
         self.started = False
         
         self.idle = True
-        db.session.flush()
+        db.session.commit()
         
     def wipe(self):
         UserInput.query.filter_by(room_id=self.room.id).delete()
-        db.session.flush()
-      
+        db.session.commit()
+        
     def time_limit_reached(self):
       
         return (not self.idle and (datetime.utcnow() - self.current_turn_start_time).total_seconds() > self.turn_length/100) or (self.idle and (datetime.utcnow() - self.current_idle_start_time).total_seconds() > self.idle_length/100)
@@ -279,7 +279,7 @@ class PictionaryManager(db.Model):
         self.owner.owned_pictionary_rooms.remove(self)
         user.owned_pictionary_rooms.append(self)
         self.owner_id = user.id
-        db.session.flush()
+        db.session.commit()
     
    
         
@@ -288,7 +288,7 @@ class PictionaryManager(db.Model):
         if not tracker:
             tracker = PictionaryUserTracker(user.id, self.id)
             db.session.add(tracker)
-            db.session.flush()
+            db.session.commit()
         return tracker
     
     def get_tracker(self, user):
@@ -325,7 +325,7 @@ class PictionaryManager(db.Model):
     def go_idle(self):
         self.idle = True
         self.current_idle_start_time = datetime.utcnow()
-        db.session.flush()
+        db.session.commit()
 
     # returns true if a simple majority (n/2 + 1) active users
     # are ready
@@ -344,17 +344,17 @@ class PictionaryManager(db.Model):
         
     def user_is_ready(self, user):
         self.get_tracker(user).ready = True
-        db.session.flush()
+        db.session.commit()
         
     def user_not_ready(self, user):
         self.get_tracker(user).ready = False
-        db.session.flush()
+        db.session.commit()
         
     def choose_word(self):
         wl = self.word_list.split("\n")
         sr = SystemRandom()
         self.current_word = sr.choice(wl)
-        db.session.flush()
+        db.session.commit()
         return self.current_word
         
     def choose_player(self):
@@ -373,7 +373,7 @@ class PictionaryManager(db.Model):
         user_tracker.score += points_awarded
         self.get_tracker(self.currently_drawing()).score += points_awarded // 2
         user_tracker.guessed_this_round = True
-        db.session.flush()
+        db.session.commit()
         return points_awarded
         
     def destroy(self):
@@ -426,17 +426,17 @@ class Socket(db.Model):
     
     def destroy(self):
         db.session.delete(self)
-        db.session.flush()
+        db.session.commit()
         
     def push_input(self, data):
         inp = UserInput(self.user.id, self.room.id, json.dumps(data))
         db.session.add(inp)
-        db.session.flush()
+        db.session.commit()
     
     def record_activity(self):
         self.room.record_activity()
         self.last_active_time = datetime.utcnow()
-        db.session.flush()
+        db.session.commit()
      
 class UserInput(db.Model):
     id = db.Column(db.Integer(), primary_key=True)

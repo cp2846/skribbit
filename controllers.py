@@ -87,7 +87,6 @@ def create_room_pictionary():
             return redirect(url_for('create_room_pictionary'))
 
         new_room = user.create_pictionary_room(room_name,turn_length=room_turn_length*100,max_rounds=room_max_rounds,word_list=room_wordlist)
-        db.session.commit()
         return redirect(url_for('canvas', room_code=new_room.room.room_code))
 
     return render_template('create_room_pictionary.html', user=get_user())
@@ -101,7 +100,6 @@ def create_room_normal():
             flash('Fields cannot be empty.', 'error')
             return redirect(url_for('create_room_normal'))
         new_room = user.create_room(room_name)
-        db.session.commit()
         return redirect(url_for('canvas', room_code=new_room.room_code))
     return render_template('create_room_normal.html', user=get_user())   
     
